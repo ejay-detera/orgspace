@@ -96,14 +96,6 @@ php artisan serve
 npm run dev
 ```
 
-## 📱 Screenshots
-
-Coming soon...
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
 ## 📄 License
 
 This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
