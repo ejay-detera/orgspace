@@ -40,6 +40,12 @@ Complete installation instructions for all libraries and dependencies.
 ### 🚀 [Start Guide](./start.md)
 How to start the project, run migrations, seed database, and begin development.
 
+### 📁 [File Structure & Conventions](./FileStructure.md)
+Detailed file structure, naming conventions, and coding standards for the project.
+
+### 🔄 [GitHub Guidelines](./GithubGuidelines.md)
+Git workflow, commit message conventions, branch naming rules, and collaboration guidelines.
+
 ## 🎯 Quick Start
 
 1. Clone the repository
