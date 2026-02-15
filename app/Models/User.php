@@ -18,9 +18,16 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'middle_name',
+        'last_name',
+        'username',
         'email',
         'password',
+        'birthdate',
+        'is_admin',
+        'committee_id',
+        'last_login',
     ];
 
     /**
@@ -43,6 +50,23 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'birthdate' => 'date',
+            'last_login' => 'datetime',
+            'is_admin' => 'boolean',
         ];
+    }
+
+    /**
+     * Backwards-compatible accessor for `name` used across the app.
+     */
+    public function getNameAttribute(): string
+    {
+        $parts = array_filter([
+            $this->first_name ?? null,
+            $this->middle_name ?? null,
+            $this->last_name ?? null,
+        ]);
+
+        return implode(' ', $parts);
     }
 }

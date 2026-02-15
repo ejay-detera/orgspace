@@ -1,23 +1,25 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
+import TextInput from "@/Components/TextInput";
+import GuestLayout from "@/Layouts/GuestLayout";
+import { Head, Link, useForm } from "@inertiajs/react";
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
+        first_name: "",
+        middle_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+        password_confirmation: "",
     });
 
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
+        post(route("register"), {
+            onFinish: () => reset("password", "password_confirmation"),
         });
     };
 
@@ -26,21 +28,69 @@ export default function Register() {
             <Head title="Register" />
 
             <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="name" value="Name" />
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <InputLabel htmlFor="first_name" value="First name" />
 
-                    <TextInput
-                        id="name"
-                        name="name"
-                        value={data.name}
-                        className="mt-1 block w-full"
-                        autoComplete="name"
-                        isFocused={true}
-                        onChange={(e) => setData('name', e.target.value)}
-                        required
-                    />
+                        <TextInput
+                            id="first_name"
+                            name="first_name"
+                            value={data.first_name}
+                            className="mt-1 block w-full"
+                            autoComplete="given-name"
+                            isFocused={true}
+                            onChange={(e) =>
+                                setData("first_name", e.target.value)
+                            }
+                            required
+                        />
 
-                    <InputError message={errors.name} className="mt-2" />
+                        <InputError
+                            message={errors.first_name}
+                            className="mt-2"
+                        />
+                    </div>
+
+                    <div>
+                        <InputLabel htmlFor="middle_name" value="Middle name" />
+
+                        <TextInput
+                            id="middle_name"
+                            name="middle_name"
+                            value={data.middle_name}
+                            className="mt-1 block w-full"
+                            autoComplete="additional-name"
+                            onChange={(e) =>
+                                setData("middle_name", e.target.value)
+                            }
+                        />
+
+                        <InputError
+                            message={errors.middle_name}
+                            className="mt-2"
+                        />
+                    </div>
+
+                    <div>
+                        <InputLabel htmlFor="last_name" value="Last name" />
+
+                        <TextInput
+                            id="last_name"
+                            name="last_name"
+                            value={data.last_name}
+                            className="mt-1 block w-full"
+                            autoComplete="family-name"
+                            onChange={(e) =>
+                                setData("last_name", e.target.value)
+                            }
+                            required
+                        />
+
+                        <InputError
+                            message={errors.last_name}
+                            className="mt-2"
+                        />
+                    </div>
                 </div>
 
                 <div className="mt-4">
@@ -53,7 +103,7 @@ export default function Register() {
                         value={data.email}
                         className="mt-1 block w-full"
                         autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
+                        onChange={(e) => setData("email", e.target.value)}
                         required
                     />
 
@@ -70,7 +120,7 @@ export default function Register() {
                         value={data.password}
                         className="mt-1 block w-full"
                         autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
+                        onChange={(e) => setData("password", e.target.value)}
                         required
                     />
 
@@ -91,7 +141,7 @@ export default function Register() {
                         className="mt-1 block w-full"
                         autoComplete="new-password"
                         onChange={(e) =>
-                            setData('password_confirmation', e.target.value)
+                            setData("password_confirmation", e.target.value)
                         }
                         required
                     />
@@ -104,7 +154,7 @@ export default function Register() {
 
                 <div className="mt-4 flex items-center justify-end">
                     <Link
-                        href={route('login')}
+                        href={route("login")}
                         className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                         Already registered?
