@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('role')->nullable();
 
             $table->foreignId('project_id')
-                ->constrained('projects')
+                ->constrained()
                 ->cascadeOnDelete();
 
             $table->foreignId('committee_id')
@@ -23,7 +23,7 @@ return new class extends Migration
 
             $table->foreignId('user_id')
                 ->nullable()
-                ->constrained('users')
+                ->constrained()
                 ->nullOnDelete();
         });
     }

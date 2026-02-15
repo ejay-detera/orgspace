@@ -8,23 +8,24 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('projects', function (Blueprint $table) {
+        Schema::create('announcements', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description')->nullable();
-            $table->string('priority');
-            $table->string('status');
+            $table->text('content');
             $table->string('type');
-            $table->dateTime('start_date_time')->nullable();
-            $table->dateTime('end_date_time')->nullable();
 
             $table->foreignId('organization_id')
-                ->constrained('organizations')
+                ->constrained()
+                ->cascadeOnDelete();
+
+            $table->foreignId('created_by')
+                ->constrained('users')
                 ->cascadeOnDelete();
 
             $table->foreignId('committee_id')
+                ->nullable()
                 ->constrained('committee')
-                ->cascadeOnDelete();
+                ->nullOnDelete();
 
             $table->timestamps();
         });
@@ -32,6 +33,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('projects');
+        Schema::dropIfExists('announcements');
     }
 };

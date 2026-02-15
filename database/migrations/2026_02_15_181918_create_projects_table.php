@@ -8,18 +8,22 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('committee', function (Blueprint $table) {
+        Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('title');
             $table->text('description')->nullable();
-            $table->boolean('is_public')->default(false);
+            $table->string('priority');
+            $table->string('status');
+            $table->string('type');
+            $table->dateTime('start_date_time')->nullable();
+            $table->dateTime('end_date_time')->nullable();
 
             $table->foreignId('organization_id')
-                ->constrained('organizations')
+                ->constrained()
                 ->cascadeOnDelete();
 
-            $table->foreignId('created_by')
-                ->constrained('users')
+            $table->foreignId('committee_id')
+                ->constrained('committee')
                 ->cascadeOnDelete();
 
             $table->timestamps();
@@ -28,6 +32,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('committee');
+        Schema::dropIfExists('projects');
     }
 };

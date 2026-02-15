@@ -8,25 +8,27 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('tasks_history', function (Blueprint $table) {
+        Schema::create('tasks_assigned', function (Blueprint $table) {
             $table->id();
-            $table->text('note')->nullable();
-            $table->string('status_before');
-            $table->string('status_after');
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('assigned_at')->useCurrent();
+            $table->string('completion_status')->default('pending');
 
-            $table->foreignId('updated_by')
+            $table->foreignId('assigned_by')
                 ->constrained('users')
                 ->cascadeOnDelete();
 
             $table->foreignId('task_id')
-                ->constrained('tasks')
+                ->constrained()
+                ->cascadeOnDelete();
+
+            $table->foreignId('user_id')
+                ->constrained()
                 ->cascadeOnDelete();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('tasks_history');
+        Schema::dropIfExists('tasks_assigned');
     }
 };

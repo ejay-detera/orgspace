@@ -26,7 +26,7 @@ return new class extends Migration
             $table->boolean('generate_organization_code')->default(false);
 
             $table->foreignId('user_id')
-                ->constrained('users')
+                ->constrained()
                 ->cascadeOnDelete();
         });
     }

@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('tasks_history', function (Blueprint $table) {
+        Schema::create('project_history', function (Blueprint $table) {
             $table->id();
             $table->text('note')->nullable();
             $table->string('status_before');
@@ -19,14 +19,14 @@ return new class extends Migration
                 ->constrained('users')
                 ->cascadeOnDelete();
 
-            $table->foreignId('task_id')
-                ->constrained('tasks')
+            $table->foreignId('project_id')
+                ->constrained()
                 ->cascadeOnDelete();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('tasks_history');
+        Schema::dropIfExists('project_history');
     }
 };

@@ -8,15 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
+        Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-            $table->text('message');
-            $table->string('type');
-            $table->boolean('is_read')->default(false);
-            $table->timestamp('read_at')->nullable();
+            $table->string('name');
+            $table->string('abbreviation')->nullable();
+            $table->text('description')->nullable();
+            $table->string('day');
+            $table->time('start_time');
+            $table->time('end_time');
 
             $table->foreignId('user_id')
-                ->constrained('users')
+                ->constrained()
                 ->cascadeOnDelete();
 
             $table->timestamps();
@@ -25,6 +27,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('notifications');
+        Schema::dropIfExists('schedules');
     }
 };

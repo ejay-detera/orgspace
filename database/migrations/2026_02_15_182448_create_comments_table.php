@@ -13,7 +13,7 @@ return new class extends Migration
             $table->text('content');
 
             $table->foreignId('task_id')
-                ->constrained('tasks')
+                ->constrained()
                 ->cascadeOnDelete();
 
             $table->foreignId('commented_by')

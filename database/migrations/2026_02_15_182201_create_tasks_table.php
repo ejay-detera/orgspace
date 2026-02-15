@@ -19,7 +19,7 @@ return new class extends Migration
             $table->dateTime('end_date_time')->nullable();
 
             $table->foreignId('project_id')
-                ->constrained('projects')
+                ->constrained()
                 ->cascadeOnDelete();
 
             $table->foreignId('created_by')

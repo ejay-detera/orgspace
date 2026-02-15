@@ -8,16 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('schedules', function (Blueprint $table) {
+        Schema::create('committee', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('abbreviation')->nullable();
             $table->text('description')->nullable();
-            $table->string('day');
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->boolean('is_public')->default(false);
 
-            $table->foreignId('user_id')
+            $table->foreignId('organization_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
+            $table->foreignId('created_by')
                 ->constrained('users')
                 ->cascadeOnDelete();
 
@@ -27,6 +28,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('schedules');
+        Schema::dropIfExists('committee');
     }
 };

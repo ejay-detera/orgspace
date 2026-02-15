@@ -10,8 +10,6 @@ return new class extends Migration
     {
         Schema::create('kicked_users', function (Blueprint $table) {
             $table->id();
-            $table->text('reason')->nullable();
-            $table->timestamp('created_at')->useCurrent();
 
             $table->foreignId('user_id')
                 ->constrained()
@@ -19,6 +17,9 @@ return new class extends Migration
             $table->foreignId('organization_id')
                 ->constrained()
                 ->onDelete('cascade');
+
+            $table->text('reason')->nullable();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
