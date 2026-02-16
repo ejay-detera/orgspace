@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap');
+
+:root {
+  /* Colors */
+  --color-primary: #04095D;
+  --color-secondary: #FFFFFF;
+  --color-accent: #06007A;
+  --color-dark: #1E1E1E;
+  --color-black: #000000;
+  
+  /* Background Colors */
+  --bg-primary: #000000;
+  --bg-secondary: #04095D;
+  --bg-light: #FFFFFF;
+  
+  /* Font Families */
+  --font-roboto-serif: 'Roboto Serif', serif;
+  --font-poppins: 'Poppins', sans-serif;
+}
+
+/* Default font for entire application */
+body {
+  font-family: var(--font-poppins);
+}
+
+/* Utility classes for colors */
+.text-primary { color: var(--color-primary); }
+.text-secondary { color: var(--color-secondary); }
+.text-accent { color: var(--color-accent); }
+.text-dark { color: var(--color-dark); }
+.text-black { color: var(--color-black); }
+
+.bg-primary { background-color: var(--bg-primary); }
+.bg-secondary { background-color: var(--bg-secondary); }
+.bg-light { background-color: var(--bg-light); }
+
+.bg-color-primary { background-color: var(--color-primary); }
+.bg-color-secondary { background-color: var(--color-secondary); }
+.bg-color-accent { background-color: var(--color-accent); }
+.bg-color-dark { background-color: var(--color-dark); }
+.bg-color-black { background-color: var(--color-black); }
+
+/* Font classes */
+.font-roboto-serif { font-family: var(--font-roboto-serif); }
+.font-poppins { font-family: var(--font-poppins); }
+
+/* Gradient text classes */
+.text-gradient-secondary-primary {
+  background: linear-gradient(to bottom, var(--color-secondary), var(--color-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

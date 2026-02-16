@@ -1,8 +1,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import PageTransition from '@/Components/PageTransition';
 
 export default function Dashboard() {
     return (
+        <PageTransition>
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
@@ -22,5 +24,6 @@ export default function Dashboard() {
                 </div>
             </div>
         </AuthenticatedLayout>
+        </PageTransition>
     );
 }
