@@ -33,6 +33,7 @@ php artisan breeze:install react
 ```
 
 This command installs:
+
 - React 18.2.0
 - React DOM 18.2.0
 - Inertia.js 2.0.0
@@ -49,6 +50,7 @@ npx shadcn@latest init
 ```
 
 During initialization, configure:
+
 - Style: New York
 - TypeScript: No (using JavaScript)
 - Tailwind CSS config: `tailwind.config.js`
@@ -63,6 +65,7 @@ npx shadcn@latest add button card input label
 ```
 
 This installs:
+
 - Radix UI primitives
 - Lucide React icons
 - Component utilities (class-variance-authority, clsx, tailwind-merge)
@@ -131,6 +134,7 @@ This installs:
 ### TailwindCSS Configuration
 
 The `tailwind.config.js` is configured with:
+
 - Content paths for Blade, React, and Vue files
 - Custom font family (Figtree)
 - Shadcn/ui CSS variables
@@ -139,6 +143,7 @@ The `tailwind.config.js` is configured with:
 ### Vite Configuration
 
 The `vite.config.js` includes:
+
 - Laravel Vite plugin
 - React plugin
 - Hot module replacement
@@ -147,6 +152,7 @@ The `vite.config.js` includes:
 ### Shadcn/ui Configuration
 
 The `components.json` includes:
+
 - Component aliases (@/components, @/lib/utils)
 - New York style
 - Stone base color
@@ -196,6 +202,8 @@ DB_DATABASE=orgspace
 DB_USERNAME=root
 DB_PASSWORD=
 ```
+
+another test
 
 ## Next Steps
 

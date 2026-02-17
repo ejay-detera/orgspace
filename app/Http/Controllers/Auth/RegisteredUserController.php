@@ -36,7 +36,11 @@ class RegisteredUserController extends Controller
             'middle_name' => 'nullable|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'birthdate' => ['required', 'date', 'before_or_equal:today'],
+            'password' => ['required', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/'],
+        ], [
+            'birthdate.before_or_equal' => 'Birthdate cannot be in the future.',
+            'password.regex' => 'Password must be at least 8 characters and include at least one uppercase letter, one lowercase letter, and one number.',
         ]);
 
         $fullName = trim($request->first_name . ' ' . ($request->last_name ?? ''));
@@ -48,6 +52,7 @@ class RegisteredUserController extends Controller
             'last_name' => $request->last_name,
             'username' => $username,
             'email' => $request->email,
+            'birthdate' => $request->birthdate,
             'password' => Hash::make($request->password),
         ]);
 

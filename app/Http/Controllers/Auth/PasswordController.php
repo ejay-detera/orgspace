@@ -17,7 +17,9 @@ class PasswordController extends Controller
     {
         $validated = $request->validate([
             'current_password' => ['required', 'current_password'],
-            'password' => ['required', Password::defaults(), 'confirmed'],
+            'password' => ['required', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/'],
+        ], [
+            'password.regex' => 'Password must be at least 8 characters and include at least one uppercase letter, one lowercase letter, and one number.',
         ]);
 
         $request->user()->update([

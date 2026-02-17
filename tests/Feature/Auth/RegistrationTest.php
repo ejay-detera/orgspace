@@ -23,12 +23,28 @@ class RegistrationTest extends TestCase
             'middle_name' => null,
             'last_name' => 'User',
             'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'password' => 'Password1',
+            'password_confirmation' => 'Password1',
         ]);
 
         $response->assertSessionHasNoErrors();
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_password_must_meet_requirements_on_registration(): void
+    {
+        $response = $this->post('/register', [
+            'first_name' => 'Test',
+            'middle_name' => null,
+            'last_name' => 'User',
+            'email' => 'bad@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response->assertSessionHasErrors([
+            'password' => 'Password must be at least 8 characters and include at least one uppercase letter, one lowercase letter, and one number.',
+        ]);
     }
 }
