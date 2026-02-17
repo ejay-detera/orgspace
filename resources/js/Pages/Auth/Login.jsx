@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import LoginLayout from '@/Layouts/LoginLayout';
 import ForgotPasswordModal from '@/Components/Auth/ForgotPasswordModal';
@@ -13,6 +13,8 @@ export default function Login({ status, canResetPassword }) {
     });
     const [processing, setProcessing] = useState(false);
     const [errors, setErrors] = useState({});
+    const [isRateLimited, setIsRateLimited] = useState(false);
+    const [retrySeconds, setRetrySeconds] = useState(0);
 
     const handleSubmit = () => {
         // Reset errors
@@ -48,6 +50,26 @@ export default function Login({ status, canResetPassword }) {
             },
             onError: (errors) => {
                 setErrors(errors);
+
+                // backend includes numeric `throttle_seconds` when rate-limited
+                const throttleVal = errors?.throttle_seconds || errors?.throttle_seconds?.[0];
+                const emailMsg = errors?.email || errors?.email?.[0] || '';
+
+                if (throttleVal) {
+                    const seconds = Number(throttleVal);
+                    if (!Number.isNaN(seconds) && seconds > 0) {
+                        setIsRateLimited(true);
+                        setRetrySeconds(seconds);
+                    }
+                } else {
+                    // fallback: try to parse seconds from the translated message (best-effort)
+                    const m = String(emailMsg).match(/(\d+)\s*second/);
+                    if (m) {
+                        setIsRateLimited(true);
+                        setRetrySeconds(Number(m[1]));
+                    }
+                }
+
                 setProcessing(false);
             },
             onFinish: () => {
@@ -76,6 +98,24 @@ export default function Login({ status, canResetPassword }) {
             handleSubmit();
         }
     };
+
+    // countdown timer for throttle
+    useEffect(() => {
+        if (!isRateLimited || retrySeconds <= 0) return;
+
+        const id = setInterval(() => {
+            setRetrySeconds(prev => {
+                if (prev <= 1) {
+                    clearInterval(id);
+                    setIsRateLimited(false);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(id);
+    }, [isRateLimited, retrySeconds]);
 
     return (
         <>
@@ -162,10 +202,10 @@ export default function Login({ status, canResetPassword }) {
                         <button
                             type="button"
                             onClick={handleSubmit}
-                            disabled={processing}
+                            disabled={processing || isRateLimited}
                             className="w-full bg-[#04095D] text-white font-semibold py-3 sm:py-4 px-4 sm:px-6 rounded-full hover:bg-[#030746] focus:outline-none focus:ring-2 focus:ring-[#04095D] focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                         >
-                            {processing ? 'Signing in...' : 'Login'}
+                            {processing ? 'Signing in...' : isRateLimited ? `Try again in ${retrySeconds}s` : 'Login'}
                         </button>
 
                         {canResetPassword && (

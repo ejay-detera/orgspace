@@ -42,7 +42,8 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+            // count this failed attempt and keep it for 60 seconds (5 attempts per minute)
+            RateLimiter::hit($this->throttleKey(), 60);
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
@@ -67,11 +68,13 @@ class LoginRequest extends FormRequest
 
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
+        // Include a numeric throttle_seconds field so the frontend can show a precise countdown
         throw ValidationException::withMessages([
             'email' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
+            'throttle_seconds' => $seconds,
         ]);
     }
 
