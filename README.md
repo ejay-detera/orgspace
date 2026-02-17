@@ -20,12 +20,14 @@
 ## 🛠️ Technology Stack
 
 ### Backend
+
 - **Laravel 11** - PHP framework
 - **MySQL/PostgreSQL/SQLite** - Database support
 - **Laravel Sanctum** - API authentication
 - **Laravel Breeze** - Authentication scaffolding
 
 ### Frontend
+
 - **React 18** - JavaScript library
 - **Inertia.js** - SPA without building an API
 - **TailwindCSS** - Utility-first CSS framework
@@ -35,16 +37,22 @@
 ## 📋 Documentation
 
 ### 📦 [Setup Guide](./setup.md)
+
 Complete installation instructions for all libraries and dependencies.
 
 ### 🚀 [Start Guide](./start.md)
+
 How to start the project, run migrations, seed database, and begin development.
 
 ### 📁 [File Structure & Conventions](./FileStructure.md)
+
 Detailed file structure, naming conventions, and coding standards for the project.
 
 ### 🔄 [GitHub Guidelines](./GithubGuidelines.md)
+
 Git workflow, commit message conventions, branch naming rules, and collaboration guidelines.
+
+this is a test for ruleset
 
 ## 🎯 Quick Start
 
@@ -80,12 +88,14 @@ resources/
 ## 🔧 Development
 
 ### Prerequisites
+
 - PHP 8.2+
 - Node.js 18+
 - Composer
 - Database (MySQL/PostgreSQL/SQLite)
 
 ### Environment Setup
+
 ```bash
 cp .env.example .env
 php artisan key:generate
@@ -94,6 +104,7 @@ npm install
 ```
 
 ### Running the Application
+
 ```bash
 # Terminal 1 - Laravel Server
 php artisan serve
