@@ -13,6 +13,14 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/announcements', function () {
+    return Inertia::render('Announcements/AnnouncementPage');
+})->middleware(['auth', 'verified'])->name('announcements.index');
+
+Route::get('/announcements/create', function () {
+    return Inertia::render('Announcements/CreateAnnouncement');
+})->middleware(['auth', 'verified'])->name('announcements.create');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
