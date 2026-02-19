@@ -23,7 +23,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             <ApplicationLogo className="h-8 w-auto" />
                         </Link>
                     </div>
-                    
+
                     {/* Mobile menu button - Left side on mobile */}
                     <button
                         onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -33,7 +33,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
-                    
+
                     {/* Search Box - Center */}
                     <div className="hidden md:flex flex-1 max-w-4xl mx-8">
                         <div className="relative w-full">
@@ -48,98 +48,98 @@ export default function AuthenticatedLayout({ header, children }) {
 
                     {/* Right side icons */}
                     <div className="flex items-center space-x-3">
-                    {/* Notification Bell with Dropdown */}
-                    <div className="relative">
-                        <Dropdown>
-                            <Dropdown.Trigger>
-                                <button className="relative text-white p-2 rounded-md hover:bg-white/10 transition-colors">
-                                    <Bell className="h-6 w-6" />
-                                    <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-                                </button>
-                            </Dropdown.Trigger>
-
-                            <Dropdown.Content align="right" width="80">
-                                <div className="py-2">
-                                    <div className="px-4 py-3 border-b border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer">
-                                        <div className="flex items-start space-x-3">
-                                            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                                <Bell className="h-4 w-4 text-blue-600" />
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-medium text-gray-900">New Project Created</p>
-                                                <p className="text-xs text-gray-500">2 minutes ago</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="px-4 py-3 border-b border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer">
-                                        <div className="flex items-start space-x-3">
-                                            <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                                <Calendar className="h-4 w-4 text-yellow-600" />
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-medium text-gray-900">Meeting Reminder</p>
-                                                <p className="text-xs text-gray-500">1 hour ago</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer">
-                                        <div className="flex items-start space-x-3">
-                                            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                                <Megaphone className="h-4 w-4 text-green-600" />
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-medium text-gray-900">System Update</p>
-                                                <p className="text-xs text-gray-500">3 hours ago</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Dropdown.Content>
-                        </Dropdown>
-                    </div>
-
-                    {/* User Profile Dropdown */}
-                    <div className="relative">
-                        <Dropdown>
-                            <Dropdown.Trigger>
-                                <span className="inline-flex rounded-md">
-                                    <button
-                                        type="button"
-                                        className="inline-flex items-center rounded-md border border-transparent bg-white/10 px-3 py-2 text-sm font-medium leading-4 text-white transition duration-150 ease-in-out hover:bg-white/20 focus:outline-none"
-                                    >
-                                        <UserCircle className="h-8 w-8 mr"/>
+                        {/* Notification Bell with Dropdown */}
+                        <div className="relative">
+                            <Dropdown>
+                                <Dropdown.Trigger>
+                                    <button className="relative text-white p-2 rounded-md hover:bg-white/10 transition-colors">
+                                        <Bell className="h-6 w-6" />
+                                        <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
                                     </button>
-                                </span>
-                            </Dropdown.Trigger>
+                                </Dropdown.Trigger>
 
-                            <Dropdown.Content align="right" width="56">
-                                <div className="py-1">
-                                    <div className="px-4 py-2 hover:bg-gray-50 transition-colors cursor-pointer">
-                                        <div className="flex items-center space-x-3">
-                                            <UserCircle className="h-4 w-4 text-gray-600" />
-                                            <span className="text-sm text-gray-700">Profile</span>
+                                <Dropdown.Content align="right" width="80">
+                                    <div className="py-2">
+                                        <div className="px-4 py-3 border-b border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer">
+                                            <div className="flex items-start space-x-3">
+                                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                                    <Bell className="h-4 w-4 text-blue-600" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-900">New Project Created</p>
+                                                    <p className="text-xs text-gray-500">2 minutes ago</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="px-4 py-3 border-b border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer">
+                                            <div className="flex items-start space-x-3">
+                                                <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                                    <Calendar className="h-4 w-4 text-yellow-600" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-900">Meeting Reminder</p>
+                                                    <p className="text-xs text-gray-500">1 hour ago</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer">
+                                            <div className="flex items-start space-x-3">
+                                                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                                    <Megaphone className="h-4 w-4 text-green-600" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-900">System Update</p>
+                                                    <p className="text-xs text-gray-500">3 hours ago</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="px-4 py-2 hover:bg-gray-50 transition-colors cursor-pointer">
-                                        <div className="flex items-center space-x-3">
-                                            <Cog className="h-4 w-4 text-gray-600" />
-                                            <span className="text-sm text-gray-700">Settings</span>
-                                        </div>
-                                    </div>
-                                    <div className="border-t border-gray-200 px-4 py-2 hover:bg-red-50 transition-colors cursor-pointer">
+                                </Dropdown.Content>
+                            </Dropdown>
+                        </div>
+
+                        {/* User Profile Dropdown */}
+                        <div className="relative">
+                            <Dropdown>
+                                <Dropdown.Trigger>
+                                    <span className="inline-flex rounded-md">
                                         <button
-                                            onClick={() => router.post(route('logout'))}
-                                            className="flex items-center space-x-3 w-full"
+                                            type="button"
+                                            className="inline-flex items-center rounded-md border border-transparent bg-white/10 px-3 py-2 text-sm font-medium leading-4 text-white transition duration-150 ease-in-out hover:bg-white/20 focus:outline-none"
                                         >
-                                            <LogOut className="h-4 w-4 text-red-600" />
-                                            <span className="text-sm text-red-700 font-medium">Log Out</span>
+                                            <UserCircle className="h-8 w-8 mr" />
                                         </button>
+                                    </span>
+                                </Dropdown.Trigger>
+
+                                <Dropdown.Content align="right" width="56">
+                                    <div className="py-1">
+                                        <div className="px-4 py-2 hover:bg-gray-50 transition-colors cursor-pointer">
+                                            <div className="flex items-center space-x-3">
+                                                <UserCircle className="h-4 w-4 text-gray-600" />
+                                                <span className="text-sm text-gray-700">Profile</span>
+                                            </div>
+                                        </div>
+                                        <div className="px-4 py-2 hover:bg-gray-50 transition-colors cursor-pointer">
+                                            <div className="flex items-center space-x-3">
+                                                <Cog className="h-4 w-4 text-gray-600" />
+                                                <span className="text-sm text-gray-700">Settings</span>
+                                            </div>
+                                        </div>
+                                        <div className="border-t border-gray-200 px-4 py-2 hover:bg-red-50 transition-colors cursor-pointer">
+                                            <button
+                                                onClick={() => router.post(route('logout'))}
+                                                className="flex items-center space-x-3 w-full"
+                                            >
+                                                <LogOut className="h-4 w-4 text-red-600" />
+                                                <span className="text-sm text-red-700 font-medium">Log Out</span>
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            </Dropdown.Content>
-                        </Dropdown>
+                                </Dropdown.Content>
+                            </Dropdown>
+                        </div>
                     </div>
-                </div>
                 </div>
             </nav>
 
