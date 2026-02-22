@@ -71,8 +71,9 @@ The creation UI is located at `resources/js/Pages/Organization/Create.jsx`.
 - It includes form validation feedback.
 
 **Current Status**:
-- The **"Organizations"** link in the sidebar (`AuthenticatedLayout.jsx`) is currently **Disabled** and labeled "Soon".
-- The feature is fully functional but hidden from the main navigation.
+- The **"Organizations"** link in the sidebar (`AuthenticatedLayout.jsx`) is enabled and functional.
+- The creation form now supports uploading an image/logo for the organization.
+- Uploaded images are stored in the `public/organizations` storage disk.
 
 ## Testing
 An automated Feature Test exists: `tests/Feature/OrganizationTest.php`.

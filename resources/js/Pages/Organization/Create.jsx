@@ -7,11 +7,14 @@ export default function Create() {
         name: '',
         description: '',
         type: '',
+        image: null,
     });
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('organizations.store'));
+        post(route('organizations.store'), {
+            forceFormData: true,
+        });
     };
 
     return (
@@ -64,6 +67,17 @@ export default function Create() {
                                             placeholder="e.g. Student Government, Tech Club"
                                         />
                                         {errors.type && <div className="text-red-500 text-sm mt-1">{errors.type}</div>}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Logo / Image</label>
+                                        <input
+                                            type="file"
+                                            onChange={e => setData('image', e.target.files[0])}
+                                            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                                            accept="image/*"
+                                        />
+                                        {errors.image && <div className="text-red-500 text-sm mt-1">{errors.image}</div>}
                                     </div>
 
                                     <div className="flex justify-end">

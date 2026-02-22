@@ -14,6 +14,17 @@ use Inertia\Inertia;
 class OrganizationController extends Controller
 {
     /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $organizations = Auth::user()->organizations()->get();
+        return Inertia::render('Organization/Index', [
+            'organizations' => $organizations,
+        ]);
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -30,10 +41,15 @@ class OrganizationController extends Controller
             'name' => ['required', 'string', 'max:255', 'unique:organizations'],
             'description' => ['required', 'string'],
             'type' => ['required', 'string', 'max:255'],
-            'image' => ['nullable', 'string'], // Assuming URL or path string for now
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
 
-        return DB::transaction(function () use ($validated) {
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('organizations', 'public');
+        }
+
+        return DB::transaction(function () use ($validated, $imagePath) {
             // Create Organization
             $organization = Organization::create([
                 'name' => $validated['name'],
@@ -41,7 +57,7 @@ class OrganizationController extends Controller
                 'type' => $validated['type'],
                 'status' => 'active',
                 'organization_code' => Str::upper(Str::random(10)), // Generate random code
-                'image' => $validated['image'] ?? null,
+                'image' => $imagePath,
                 'created_by' => Auth::id(),
             ]);
 
@@ -62,7 +78,7 @@ class OrganizationController extends Controller
 
             // Return success response
             // In a real Inertia app, we might redirect to the new org page
-            return redirect()->back()->with('success', 'Organization created successfully!');
+            return redirect()->route('organizations.index')->with('success', 'Organization created successfully!');
         });
     }
 }

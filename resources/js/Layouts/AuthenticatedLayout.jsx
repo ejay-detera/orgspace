@@ -173,14 +173,12 @@ export default function AuthenticatedLayout({ header, children }) {
                             </NavLink>
 
                             <NavLink
-                                href="#"
-                                onClick={(e) => e.preventDefault()}
-                                className="group flex items-center space-x-3 px-4 py-3 rounded-lg text-white/60 hover:bg-white/10 transition-all duration-200 cursor-not-allowed"
-                                title="Coming soon"
+                                href={route('organizations.index')}
+                                active={route().current('organizations.index')}
+                                className="group flex items-center space-x-3 px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200"
                             >
-                                <Building className="h-5 w-5 text-gray-400 group-hover:text-white transition-colors" />
-                                <span className="text-gray-400 group-hover:text-white transition-colors">Organizations</span>
-                                <span className="ml-auto text-xs bg-white/20 px-2 py-1 rounded">Soon</span>
+                                <Building className="h-5 w-5 text-gray-300 group-hover:text-white transition-colors" />
+                                <span className="text-gray-300 group-hover:text-white transition-colors">Organizations</span>
                             </NavLink>
 
                             <NavLink
