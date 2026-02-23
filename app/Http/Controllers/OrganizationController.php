@@ -27,6 +27,16 @@ class OrganizationController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
+    public function index()
+    {
+        $organizations = Organization::withCount('committees')->get();
+        return Inertia::render('Organization/Index', [
+            'organizations' => $organizations,
+        ]);
+    }
+
+
     public function create()
     {
         return Inertia::render('Organization/Create');
@@ -78,7 +88,19 @@ class OrganizationController extends Controller
 
             // Return success response
             // In a real Inertia app, we might redirect to the new org page
+<<<<<<< HEAD
             return redirect()->route('organizations.index')->with('success', 'Organization created successfully!');
+=======
+            return redirect()->route('organizations.index');
+>>>>>>> 617fe5c (Executed all criterias for backend)
         });
+    }
+
+    public function show(Organization $organization)
+    {
+        return Inertia::render('Organization/Show', [
+            'organization' => $organization,
+            'committees' => $organization->committees()->with('permissions')->get()
+        ]);
     }
 }

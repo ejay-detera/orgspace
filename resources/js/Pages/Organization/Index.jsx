@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import PageTransition from '@/Components/PageTransition';
@@ -58,4 +59,11 @@ export default function Index({ organizations }) {
             </AuthenticatedLayout>
         </PageTransition>
     );
+=======
+// TO DO
+
+
+export default function Index() {
+    return <h1>Hello</h1>
+>>>>>>> 617fe5c (Executed all criterias for backend)
 }
