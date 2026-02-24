@@ -12,6 +12,12 @@ use Inertia\Inertia;
 
 class CommitteeController extends Controller
 {
+    public function show(Committee $committee)
+    {
+        return Inertia::render('Committees/Show', ['committee' => $committee]);
+    }
+
+
     public function create(Organization $organization)
     {
         if ($organization->created_by !== auth()->id()) abort(403);
