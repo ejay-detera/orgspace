@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import PageTransition from '@/Components/PageTransition';
@@ -32,23 +31,26 @@ export default function Index({ organizations }) {
                                 ) : (
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {organizations.map((org) => (
-                                            <div key={org.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
-                                                <div className="flex items-center justify-between mb-4">
-                                                    <h3 className="text-lg font-bold text-gray-900">{org.name}</h3>
-                                                    <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
-                                                        {org.pivot.role}
-                                                    </span>
+
+                                            <Link key={org.id} href={route(`organizations.show`, org.id)} className="block w-full">
+                                                <div className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer">
+                                                    <div className="flex items-center justify-between mb-4">
+                                                        <h3 className="text-lg font-bold text-gray-900">{org.name}</h3>
+                                                        <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+                                                            {org.pivot.role}
+                                                        </span>
+                                                    </div>
+                                                    {org.image && (
+                                                        <img
+                                                            src={`/storage/${org.image}`}
+                                                            alt={org.name}
+                                                            className="w-full h-32 object-cover rounded-md mb-4"
+                                                        />
+                                                    )}
+                                                    <p className="text-sm text-gray-600 mb-2">{org.type}</p>
+                                                    <p className="text-sm text-gray-700 line-clamp-3">{org.description}</p>
                                                 </div>
-                                                {org.image && (
-                                                    <img
-                                                        src={`/storage/${org.image}`}
-                                                        alt={org.name}
-                                                        className="w-full h-32 object-cover rounded-md mb-4"
-                                                    />
-                                                )}
-                                                <p className="text-sm text-gray-600 mb-2">{org.type}</p>
-                                                <p className="text-sm text-gray-700 line-clamp-3">{org.description}</p>
-                                            </div>
+                                            </Link>
                                         ))}
                                     </div>
                                 )}
@@ -59,11 +61,4 @@ export default function Index({ organizations }) {
             </AuthenticatedLayout>
         </PageTransition>
     );
-=======
-// TO DO
-
-
-export default function Index() {
-    return <h1>Hello</h1>
->>>>>>> 617fe5c (Executed all criterias for backend)
 }
