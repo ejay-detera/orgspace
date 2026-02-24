@@ -13,7 +13,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // call user-specific seeder (keeps seed responsibilities separated)
-        $this->call(UserSeeder::class);
+        // call seedeers
+        $this->call([
+            UserSeeder::class,
+            OrganizationSeeder::class,
+            CommitteeSeeder::class,
+            OrganizationMemberSeeder::class,
+            PermissionUserSeeder::class,
+            PermissionCommitteeSeeder::class,
+        ]);
+
+        //$this->call(UserSeeder::class);
     }
 }

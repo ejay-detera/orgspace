@@ -24,6 +24,10 @@ return new class extends Migration
             $table->boolean('delete_other_committees')->default(false);
             $table->boolean('view_other_committees')->default(false);
             $table->boolean('generate_organization_code')->default(false);
+    
+            $table->boolean('create_announcement')->default(false);
+            $table->boolean('update_announcement')->default(false);
+            $table->boolean('delete_announcement')->default(false);
 
             $table->foreignId('committee_id')
                 ->constrained('committee')
