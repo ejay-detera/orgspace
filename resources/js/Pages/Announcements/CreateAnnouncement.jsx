@@ -20,6 +20,7 @@ export default function Announce({ committees = [] }) {
     const [discardConfirm, setDiscardConfirm] = useState(false);
     const [showValidationError, setShowValidationError] = useState(false);
     const [validationErrors, setValidationErrors] = useState([]);
+    const [fieldErrors, setFieldErrors] = useState({ title: false, content: false, type: false, committee: false });
     const [processing, setProcessing] = useState(false);
 
     // Custom member list picker
@@ -78,16 +79,14 @@ export default function Announce({ committees = [] }) {
     //POST request
     const handlePost = () => {
         // Collect all missing fields
-        const errors = [];
-        if (!data.title.trim()) errors.push('Title is required.');
-        if (!data.content.trim() || data.content === '<p><br></p>') errors.push('Body text is required.');
-        if (type === 'Select Priority' || !type) errors.push('Priority level is required.');
-        if (!selectedCommittee) errors.push('Target committee is required.');
-        if (selectedCommittee === 'custom' && selectedUserIds.length === 0) errors.push('Please select at least one member for the custom list.');
-
-        if (errors.length > 0) {
-            setValidationErrors(errors);
-            setShowValidationError(true);
+        const newFieldErrors = {
+            title: !data.title.trim(),
+            content: !data.content.trim() || data.content === '<p><br></p>',
+            type: type === 'Select Priority' || !type,
+            committee: !selectedCommittee || (selectedCommittee === 'custom' && selectedUserIds.length === 0),
+        };
+        if (Object.values(newFieldErrors).some(Boolean)) {
+            setFieldErrors(newFieldErrors);
             return;
         }
 
@@ -169,39 +168,46 @@ export default function Announce({ committees = [] }) {
                         <div className="flex items-center gap-80 flex-wrap">
 
                             {/*priority level*/}
-                            <div className="flex items-center gap-3">
-                                <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Priority Level:</span>
+                            <div className="flex flex-col gap-1">
+                                <div className="flex items-center gap-3">
+                                    <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Priority Level:</span>
 
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <button
-                                            name="type"
-                                            type="button"
-                                            className={`inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-full shadow-sm text-sm ${
-                                                type === 'Critical' ? 'text-red-600 border-red-400 bg-red-50' :
-                                                type === 'High' ? 'text-orange-600 border-orange-400 bg-orange-50' :
-                                                type === 'Normal' ? 'text-blue-600 border-blue-400 bg-blue-50' :
-                                                type === 'Low' ? 'text-gray-600 border-gray-400 bg-blue-50' : 'text-gray-700 border-gray-300 bg-white'
-                                            } `}
-                                        >{type}</button>
-                                    </Dropdown.Trigger>
+                                    <Dropdown>
+                                        <Dropdown.Trigger>
+                                            <button
+                                                name="type"
+                                                type="button"
+                                                className={`inline-flex items-center px-4 py-2 bg-white border rounded-full shadow-sm text-sm ${
+                                                    fieldErrors.type ? 'border-red-500 text-gray-700' :
+                                                    type === 'Critical' ? 'text-red-600 border-red-400 bg-red-50' :
+                                                    type === 'High' ? 'text-orange-600 border-orange-400 bg-orange-50' :
+                                                    type === 'Normal' ? 'text-blue-600 border-blue-400 bg-blue-50' :
+                                                    type === 'Low' ? 'text-gray-600 border-gray-400 bg-blue-50' : 'text-gray-700 border-gray-300 bg-white'
+                                                } `}
+                                            >{type}</button>
+                                        </Dropdown.Trigger>
 
-                                    <Dropdown.Content align="left">
-                                        {typeOptions.map((level) => (
-                                            <button key={level} type="button" onClick={() => setType(level)} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                            >{level}</button>
-                                        ))}
-                                    </Dropdown.Content>
-                                </Dropdown>
+                                        <Dropdown.Content align="left">
+                                            {typeOptions.map((level) => (
+                                                <button key={level} type="button"
+                                                    onClick={() => { setType(level); setFieldErrors(prev => ({ ...prev, type: false })); }}
+                                                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                >{level}</button>
+                                            ))}
+                                        </Dropdown.Content>
+                                    </Dropdown>
+                                </div>
+                                {fieldErrors.type && <p className="text-xs text-red-500 pl-1">Priority level is required.</p>}
                             </div>
 
                             {/*target committee*/}
-                            <div className="flex items-center gap-3">
+                            <div className="flex flex-col gap-1">
+                                <div className="flex items-center gap-3">
                                 <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Target Committee:</span>
 
                                 <Dropdown>
                                     <Dropdown.Trigger>
-                                        <button type="button" className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-full shadow-sm text-sm text-gray-700 hover:bg-gray-50 max-w-[400px] truncate"
+                                        <button type="button" className={`inline-flex items-center px-4 py-2 bg-white border rounded-full shadow-sm text-sm text-gray-700 hover:bg-gray-50 max-w-[400px] truncate ${fieldErrors.committee ? 'border-red-500' : 'border-gray-300'}`}
                                         >{selectedCommittee === 'all'
                                             ? 'All Members'
                                             : selectedCommittee === 'custom'
@@ -231,7 +237,7 @@ export default function Announce({ committees = [] }) {
                                                 <div
                                                     key="all"
                                                     className={`px-2 py-1 hover:bg-gray-100 rounded cursor-pointer ${selectedCommittee === 'all' ? 'bg-indigo-100' : ''}`}
-                                                    onClick={() => { setSelectedCommittee('all'); setSearch(''); }}>
+                                                    onClick={() => { setSelectedCommittee('all'); setSearch(''); setFieldErrors(prev => ({ ...prev, committee: false })); }}>
                                                     <span className="text-sm font-medium text-gray-700">All Members</span>
                                                 </div>
                                                 {/* Custom Member List option */}
@@ -244,13 +250,14 @@ export default function Announce({ committees = [] }) {
                                                         setDraftUserIds([...selectedUserIds]);
                                                         setActiveCommittee(committees[0] ?? null);
                                                         setShowCustomModal(true);
+                                                        setFieldErrors(prev => ({ ...prev, committee: false }));
                                                     }}>
                                                     <span className="text-sm font-medium text-indigo-700">✦ Custom Member List</span>
                                                 </div>
                                                 {filteredCommittees.map((committee) => (
                                                     <div key={committee.id} 
                                                          className={`px-2 py-1 hover:bg-gray-100 rounded cursor-pointer ${selectedCommittee === committee.id.toString() ? 'bg-indigo-100' : ''}`} 
-                                                         onClick={() => {setSelectedCommittee(committee.id.toString()); setSearch('');}}>
+                                                         onClick={() => { setSelectedCommittee(committee.id.toString()); setSearch(''); setFieldErrors(prev => ({ ...prev, committee: false })); }}>
                                                         <span className="text-sm text-gray-700">{committee.name}</span>
                                                     </div>
                                                 ))}
@@ -258,6 +265,8 @@ export default function Announce({ committees = [] }) {
                                         </div>
                                     </Dropdown.Content>
                                 </Dropdown>
+                                </div>
+                                {fieldErrors.committee && <p className="text-xs text-red-500 pl-1">Target committee is required.</p>}
                             </div>
                         </div>
                     </div>
@@ -265,8 +274,11 @@ export default function Announce({ committees = [] }) {
                         {/* Announcement title */}
                         <div>
                             <label className="block mb-2 text-sm font-medium text-gray-700">Title</label>
-                            <input name="title" type="text" value={data.title} onChange={(e) => {if (e.target.value.length <= 200) {setData('title', e.target.value);}}} maxLength={200} placeholder="Enter announcement title..."
-                                className="w-full px-4 py-2 rounded-xl border border-gray-300 rounded-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500"/>
+                            <input name="title" type="text" value={data.title}
+                                onChange={(e) => { if (e.target.value.length <= 200) { setData('title', e.target.value); setFieldErrors(prev => ({ ...prev, title: false })); } }}
+                                maxLength={200} placeholder="Enter announcement title..."
+                                className={`w-full px-4 py-2 rounded-xl border rounded-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500 ${fieldErrors.title ? 'border-red-500' : 'border-gray-300'}`}/>
+                            {fieldErrors.title && <p className="text-xs text-red-500 mt-1">Title is required.</p>}
                             <div 
                                 className={`mt-1 text-right text-sm font-medium ${data.title.length === 200 ? 'text-red-600' : 'text-gray-500'}`} >{data.title.length} / 200
                             </div>
@@ -276,9 +288,12 @@ export default function Announce({ committees = [] }) {
                         <div className="mt-8 mb-16">
                             <label className="block mb-2 text-sm font-medium text-gray-700">Body Text</label>
                                 
-                            <div className="bg-white rounded-xl border border-gray-300 shadow-sm overflow-hidden ">
-                                <ReactQuill name="content" theme="snow" value={data.content} onChange={(value) => setData('content', value)} className="h-64"></ReactQuill>
+                            <div className={`bg-white rounded-xl border shadow-sm overflow-hidden ${fieldErrors.content ? 'border-red-500' : 'border-gray-300'}`}>
+                                <ReactQuill name="content" theme="snow" value={data.content}
+                                    onChange={(value) => { setData('content', value); setFieldErrors(prev => ({ ...prev, content: false })); }}
+                                    className="h-64"></ReactQuill>
                             </div>
+                            {fieldErrors.content && <p className="text-xs text-red-500 mt-2">Body text is required.</p>}
                         </div>
                         
                         {/*File Attachment */}
@@ -532,7 +547,7 @@ export default function Announce({ committees = [] }) {
                                 <button
                                     type="button"
                                     disabled={draftUserIds.length === 0}
-                                    onClick={() => { setSelectedUserIds([...draftUserIds]); setShowCustomModal(false); }}
+                                    onClick={() => { setSelectedUserIds([...draftUserIds]); setShowCustomModal(false); setFieldErrors(prev => ({ ...prev, committee: false })); }}
                                     className="px-5 py-2 bg-[#04095D] text-white text-sm rounded-full hover:bg-[#04095D]/90 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >Confirm Selection</button>
                             </div>

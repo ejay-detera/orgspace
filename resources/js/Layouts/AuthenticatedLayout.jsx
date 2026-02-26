@@ -195,7 +195,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             </NavLink>
 
                             <NavLink
-                                href={route('announcements.index')}
+                                href="/announcements"
                                 active={route().current('announcements.*')}
                                 className="group flex items-center space-x-3 px-4 py-3 rounded-lg text-white/60 hover:bg-white/10 transition-all duration-200"
                             >
@@ -204,7 +204,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             </NavLink>
 
                             <NavLink
-                                href={route('schedule.add')}
+                                href={route('schedule.index')}
                                 active={route().current('schedule.*')}
                                 className="group flex items-center space-x-3 px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200"
                             >

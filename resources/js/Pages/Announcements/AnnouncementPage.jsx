@@ -18,19 +18,17 @@ export default function AnnouncementIndex({ announcements = [], canCreateAnnounc
 
     const handleAttachmentClick = (e, attachment) => {
         const filename = attachment.original_filename || attachment.filename || attachment.name;
+        const fileUrl = attachment.file_url || attachment.file_path || attachment.url;
         if (isImage(filename)) {
             e.preventDefault();
-            // Use placeholder image 
-            const placeholderUrl = 'https://via.placeholder.com/800x600/e5e7eb/6b7280?text=Image+Preview';
-            
             setPreviewImage({
-                url: placeholderUrl,
+                url: fileUrl,
                 name: filename
             });
             setImageLoading(true);
             setImageError(false);
         }
-        // download for not img
+        
     };
 
 
@@ -70,7 +68,7 @@ export default function AnnouncementIndex({ announcements = [], canCreateAnnounc
                                     <div>
                                         {/* Show full name  */}
                                         <h3 className="text-md text-[#04095D] font-bold">{ann.creator_name}</h3>
-                                        <p className="text-sm text-black/70">{ann.committee?.name ?? 'All Members'}</p>
+                                        <p className="text-sm text-black/70">{ann.target_label ?? 'All Members'}</p>
                                         <p className="text-xs text-gray-400 mt-1">
                                             {new Date(ann.created_at).toLocaleString(undefined, {
                                                 year: 'numeric', month: 'short', day: 'numeric',
@@ -94,7 +92,7 @@ export default function AnnouncementIndex({ announcements = [], canCreateAnnounc
                                         dangerouslySetInnerHTML={{ __html: ann.content }}
                                     />
                                     
-                                    {/* display uploaded files/attachments */}
+                                    {/* show  uploaded files/attachments */}
                                     {ann.attachments && ann.attachments.length > 0 && (
                                         <div className="mt-6 pt-4 border-t border-gray-200">
                                             <div className="flex items-center gap-2 mb-3">
@@ -108,7 +106,7 @@ export default function AnnouncementIndex({ announcements = [], canCreateAnnounc
                                                     
                                                     return (
                                                         <a key={index} 
-                                                            href={attachment.file_path || attachment.url} 
+                                                            href={attachment.file_url || attachment.file_path || attachment.url} 
                                                             download={!isImageFile}
                                                             onClick={(e) => handleAttachmentClick(e, attachment)}
                                                             className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border hover:bg-gray-100 transition-colors group cursor-pointer"
@@ -157,7 +155,7 @@ export default function AnnouncementIndex({ announcements = [], canCreateAnnounc
                             <div className="flex items-center justify-between p-4 border-b">
                                 <h3 className="text-md font-semibold text-gray-900 truncate pr-10">{previewImage.name}</h3>
                                 <div className="flex items-center gap-8">
-                                    <a href={previewImage.url} download
+                                    <a href={previewImage.url} download={previewImage.name}
                                        className="flex items-center gap-2 px-3 py-1.5 text-sm bg-[#04095d] text-white rounded-full hover:bg-indigo-900 transition-colors"
                                        onClick={(e) => e.stopPropagation()}>
                                         <Download size={16} />Download

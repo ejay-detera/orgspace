@@ -17,7 +17,7 @@ class AnnouncementController extends Controller
     //Load committee, organization, and permissions
     public function index()
     {
-        $user = Auth::user()->load('committee.organization', 'permissionUser');
+        $user = Auth::user()->load('committee.organization');
         $organizationId = $user->committee?->organization_id;
         $userCommitteeId = $user->committee_id;
         $userId = $user->id;
@@ -32,12 +32,12 @@ class AnnouncementController extends Controller
         $canCreate = $user->permissionUser?->create_announcement ?? false;
 
         // Visibility rules:
-        // There is a table called announcement_user for custom member list
+        // There is a table called announcement_users for custom member lists
 
-        //  1. All Members  — committee_id IS NULL and no rows in announcement_user
+        //  1. All Members  — committee_id IS NULL and no rows in announcement_users
         //  2. Committee    — committee_id matches the user's committee
-        //  3. Custom list  — user has a row in announcement_user
-        $announcements = Announcement::with(['creator', 'committee', 'attachments'])
+        //  3. Custom list  — user has a row in announcement_users
+        $announcements = Announcement::with(['creator', 'committee', 'attachments', 'customUsers'])
             ->where('organization_id', $organizationId)
             ->where(function ($q) use ($userId, $userCommitteeId) {
                 $q->where(function ($allMembers) {
@@ -56,6 +56,14 @@ class AnnouncementController extends Controller
             ->map(function ($ann) {
                 // Show the full name of the creator of the announcement
                 $ann->creator_name = $ann->creator?->name ?? 'Unknown';
+                //  display label for the target audience
+                if ($ann->committee) {
+                    $ann->target_label = $ann->committee->name;
+                } elseif ($ann->customUsers->isNotEmpty()) {
+                    $ann->target_label = 'Custom Member List';
+                } else {
+                    $ann->target_label = 'All Members';
+                }
                 return $ann;
             });
 

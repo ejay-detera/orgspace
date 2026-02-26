@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         //president
-        User::factory()->create([
+        $president = User::factory()->create([
             'first_name' => 'president',
             'middle_name' => null,
             'last_name' => 'example',
@@ -24,9 +24,8 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(), // Auto-verify for testing
             'committee_id' => 1,
         ]);
-
         //same org
-        User::factory()->create([
+        $sameOrg = User::factory()->create([
             'first_name' => 'Same',
             'middle_name' => null,
             'last_name' => 'Org',
@@ -36,9 +35,8 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(), // Auto-verify for testing
             'committee_id' => 2,
         ]);
-
         //same committee
-        User::factory()->create([
+        $sameCommittee = User::factory()->create([
             'first_name' => 'Same',
             'middle_name' => null,
             'last_name' => 'Committee',
@@ -48,9 +46,8 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(), // Auto-verify for testing
             'committee_id' => 1,
         ]);
-
         //different org
-        User::factory()->create([
+        $diffOrg = User::factory()->create([
             'first_name' => 'Diff',
             'middle_name' => null,
             'last_name' => 'Org',

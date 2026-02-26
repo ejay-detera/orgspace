@@ -44,6 +44,6 @@ class Announcement extends Model
 
     public function customUsers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'announcement_user', 'announcement_id', 'user_id');
+        return $this->belongsToMany(User::class, 'announcement_users', 'announcement_id', 'user_id');
     }
 }

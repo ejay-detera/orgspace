@@ -15,12 +15,20 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/announcements', [AnnouncementController::class, 'index'])->middleware(['auth', 'verified'])->name('announcements.index');
-Route::get('/announcements/create', [AnnouncementController::class, 'create'])->middleware(['auth', 'verified'])->name('announcements.create');
+//Route::get('/announcements', [AnnouncementController::class, 'index'])->middleware(['auth', 'verified'])->name('announcements.index');
+//Route::get('/announcements/create', [AnnouncementController::class, 'create'])->middleware(['auth', 'verified'])->name('announcements.create');
 
-Route::get('/schedule', [ScheduleController::class, 'add'])->name('schedule.add');
+
 Route::middleware('auth')->group(function () {
-    Route::post('/announcements', [\App\Http\Controllers\AnnouncementController::class, 'store'])->name('announcements.store');
+    //announcements
+    Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+    Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::get('/announcements/create', [AnnouncementController::class, 'create'])->name('announcements.create');
+
+    //schedules
+    Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule.index');
+    Route::post('/schedule', [ScheduleController::class, 'store'])->name('schedule.store');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AnnouncementUser extends Model
 {
-    protected $table = 'announcement_user';
+    protected $table = 'announcement_users';
 
     public $timestamps = false;
 
