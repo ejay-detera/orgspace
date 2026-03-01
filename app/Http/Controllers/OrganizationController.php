@@ -81,4 +81,92 @@ class OrganizationController extends Controller
             return redirect()->route('organizations.index')->with('success', 'Organization created successfully!');
         });
     }
+
+    /**
+     * Display a page to discover/search organizations to join.
+     */
+    public function discover(Request $request)
+    {
+        $query = $request->input('q');
+
+        $organizations = Organization::query()
+            ->where('status', 'active')
+            ->when($query, function ($q) use ($query) {
+                $q->where('name', 'ilike', "%{$query}%")
+                    ->orWhere('organization_code', 'ilike', "%{$query}%");
+            })
+            // Optionally, exclude orgs the user is already part of
+            ->whereDoesntHave('members', function ($q) {
+                $q->where('user_id', Auth::id());
+            })
+            ->get();
+
+        return Inertia::render('Organization/Discover', [
+            'organizations' => $organizations,
+            'filters' => $request->only('q'),
+        ]);
+    }
+
+    /**
+     * Send a join request to an organization.
+     */
+    public function join(Request $request, Organization $organization)
+    {
+        // Validate user is not already a member or pending
+        $existing = $organization->members()->where('user_id', Auth::id())->first();
+
+        if ($existing) {
+            return back()->withErrors(['error' => 'You are already a member or have a pending request.']);
+        }
+
+        $organization->members()->attach(Auth::id(), [
+            'role' => 'Member',
+            'status' => 'pending',
+        ]);
+
+        return back()->with('success', 'Join request sent successfully.');
+    }
+
+    /**
+     * View pending join requests (President only).
+     */
+    public function requests(Organization $organization)
+    {
+        \Illuminate\Support\Facades\Gate::authorize('manageRequests', $organization);
+
+        $pendingRequests = $organization->members()
+            ->wherePivot('status', 'pending')
+            ->get();
+
+        return Inertia::render('Organization/Requests', [
+            'organization' => $organization,
+            'requests' => $pendingRequests,
+        ]);
+    }
+
+    /**
+     * Approve a pending join request.
+     */
+    public function approveRequest(Request $request, Organization $organization, \App\Models\User $user)
+    {
+        \Illuminate\Support\Facades\Gate::authorize('manageRequests', $organization);
+
+        $organization->members()->updateExistingPivot($user->id, [
+            'status' => 'active'
+        ]);
+
+        return back()->with('success', 'Join request approved.');
+    }
+
+    /**
+     * Reject a pending join request.
+     */
+    public function rejectRequest(Request $request, Organization $organization, \App\Models\User $user)
+    {
+        \Illuminate\Support\Facades\Gate::authorize('manageRequests', $organization);
+
+        $organization->members()->detach($user->id);
+
+        return back()->with('success', 'Join request rejected.');
+    }
 }
