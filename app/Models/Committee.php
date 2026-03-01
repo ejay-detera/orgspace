@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class Committee extends Model
 {
@@ -15,16 +17,12 @@ class Committee extends Model
 
     protected $fillable = [
         'name',
+        'description',
         'is_public',
         'organization_id',
         'created_by',
     ];
 
-    protected $casts = [
-        'is_public' => 'boolean',
-    ];
-
-    // Relationships
     public function organization(): BelongsTo
     {
         return $this->belongsTo(Organization::class);
@@ -35,13 +33,13 @@ class Committee extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function users(): HasMany
+    public function committeeMembers(): BelongsToMany
     {
-        return $this->hasMany(User::class, 'committee_id');
+        return $this->belongsToMany(User::class);
     }
 
-    public function announcements(): HasMany
+    public function permissions(): HasMany
     {
-        return $this->hasMany(Announcement::class);
+        return $this->hasMany(CommitteePermission::class);
     }
 }
