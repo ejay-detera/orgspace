@@ -86,3 +86,26 @@ This test verifies:
 - Correct role assignment.
 - Default committee creation.
 - Validation logic.
+
+## Join Organization Feature
+
+### Backend Logic
+- `GET /organizations/discover`: Displays all active organizations to the user. Matches by name or code.
+- `POST /organizations/{organization}/join`: Validates user is not already a member (even pending), attaches user to `organization_members` with `role = 'Member'` and `status = 'pending'`.
+- `GET /organizations/{organization}/requests`: Displays pending join requests for the given organization.
+- `POST /organizations/{organization}/approve/{user}`: Changes pivot status from 'pending' to 'active'.
+- `POST /organizations/{organization}/reject/{user}`: Removes the pending record from `organization_members`.
+
+### Security (Policies)
+- **`OrganizationPolicy`**: Ensures only a user with an active `'President'` role in a specific organization can view, approve, or reject its join requests.
+
+### Frontend
+- **Discover Organizations (`Discover.jsx`)**: A searchable page allowing users to find organizations and send join requests.
+- **Manage Requests (`Requests.jsx`)**: A dashboard exclusively for Presidents to review, approve, or reject applicant requests.
+- **Index Dashboard (`Index.jsx`)**:
+  - Displays a "Pending" tag on organizations waiting for approval.
+  - Shows the user's specific role (e.g., "Member", "President") if approved.
+  - Displays an exclusive "Manage Join Requests" button for Presidents.
+
+### Testing
+- Automated feature tests exist in `tests/Feature/JoinOrganizationTest.php` covering the entire workflow (searching, joining, rejecting, authorizing approvals).
