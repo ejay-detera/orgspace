@@ -1,10 +1,8 @@
 import PageTransition from "@/Components/PageTransition";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
-import { useRoute } from "ziggy-js";
 
-const Show = ({ committee }) => {
-    const route = useRoute();
+export default function Show({ committee }) {
     const { delete: destroy } = useForm()
 
 
@@ -30,7 +28,7 @@ const Show = ({ committee }) => {
                             </Link>
                             <button
                                 onClick={handleDelete}
-                                className="inline-flex items-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                className="inline-flex items-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
                             >
                                 Delete
                             </button>
@@ -41,11 +39,10 @@ const Show = ({ committee }) => {
                 }
             >
                 <Head title="Committees" />
-                <div>{committee.id}</div>
 
             </AuthenticatedLayout>
         </PageTransition>
     )
 }
 
-export default Show;
+

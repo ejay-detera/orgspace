@@ -2,10 +2,8 @@ import CommitteeCard from "@/Components/CommitteeCard";
 import PageTransition from "@/Components/PageTransition";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
-import { useRoute } from "ziggy-js";
 
-const Show = ({ organization, committees }) => {
-    const route = useRoute();
+export default function Show({ organization, committees }) {
 
     return (
         <PageTransition>
@@ -29,12 +27,15 @@ const Show = ({ organization, committees }) => {
 
                 <div className="py-12">
                     <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                        <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                            <div className="p-6 text-gray-900 flex flex-wrap justify-start gap-5"> {committees.map(c => (
-                                <Link href={route("committees.show", c.id)}>
-                                    < CommitteeCard key={c.id} committee={c} />
-                                </Link>
-                            ))}
+                        <div className=" bg-white shadow-sm sm:rounded-lg">
+                            <div className="p-6 text-gray-900">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {committees.map(c => (
+                                        <Link href={route("committees.show", c.id)}>
+                                            < CommitteeCard key={c.id} committee={c} />
+                                        </Link>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -45,4 +46,4 @@ const Show = ({ organization, committees }) => {
 
 }
 
-export default Show;
+
