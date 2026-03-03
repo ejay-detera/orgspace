@@ -29,7 +29,22 @@ class AnnouncementController extends Controller
             ]);
         }
 
+        // Check if user can create announcements (President or Committee Head)
         $canCreate = $user->permissionUser?->create_announcement ?? false;
+        
+        // Also check if user is President or has a committee with head role
+        if (!$canCreate) {
+            // Check if user is President
+            if ($user->role === 'President') {
+                $canCreate = true;
+            } else {
+                // Check if user is a committee head
+                $userCommittee = $user->committee;
+                if ($userCommittee && $userCommittee->pivot && $userCommittee->pivot->role === 'Head') {
+                    $canCreate = true;
+                }
+            }
+        }
 
         // Visibility rules:
         // There is a table called announcement_users for custom member lists

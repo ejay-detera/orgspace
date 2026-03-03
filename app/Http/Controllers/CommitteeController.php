@@ -14,6 +14,7 @@ class CommitteeController extends Controller
 {
     public function show(Committee $committee)
     {
+        $committee->load(['organization', 'permissions']);
         return Inertia::render('Committees/Show', ['committee' => $committee]);
     }
 

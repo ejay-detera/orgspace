@@ -28,12 +28,33 @@ export default function Form({ organization, availablePermissions, committee, as
         e.preventDefault();
 
         const options = {
-            onSuccess: () => {
+            onSuccess: (response) => {
                 setModalState('success');
+                // Clear form after successful submission
+                if (!committee) {
+                    setData({
+                        name: '',
+                        description: '',
+                        is_public: false,
+                        permissions: [],
+                    });
+                }
             },
             onError: (errs) => {
-                const messages = Object.values(errs).flat().join(' ');
-                setErrorMessage (messages || 'Something went wrong. Please try again.');
+                // Handle different error formats
+                let errorMessage = 'Something went wrong. Please try again.';
+                
+                if (typeof errs === 'string') {
+                    errorMessage = errs;
+                } else if (errs && typeof errs === 'object') {
+                    // Flatten nested error objects and join them
+                    const errorMessages = Object.values(errs).flat();
+                    if (errorMessages.length > 0) {
+                        errorMessage = errorMessages.join(', ');
+                    }
+                }
+                
+                setErrorMessage(errorMessage);
                 setModalState('error');
             },
         };
@@ -150,22 +171,32 @@ export default function Form({ organization, availablePermissions, committee, as
                                         }
                                     </button>
                                     
-                                    {/* Success Modal - on going*/}
+                                    {/* Success Modal */}
                                     <Modal show={modalState === 'success'} onClose={closeModal} maxWidth="sm">
-                                        <div className="p-6 text-center">
-                                           <h3 className="text-green-600 text-xl font-bold">
-                                            {committee ? 'Committee Updated!' : 'Committee Created!'}
+                                        <div className="p-6">
+                                            <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 rounded-full bg-green-100">
+                                                <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                           <h3 className="text-green-600 text-xl font-bold text-center">
+                                                {committee ? 'Committee Updated Successfully!' : 'Committee Created Successfully!'}
                                            </h3>
-                                           <p className="mt-2 text-gray-600">
-                                            {committee ? 'The committee has been successfully updated.' : 'The committee has been successfully created.'}
+                                           <p className="mt-2 text-gray-600 text-center">
+                                                {committee 
+                                                    ? 'The committee has been successfully updated and permissions have been assigned.' 
+                                                    : 'The committee has been successfully created and permissions have been assigned.'
+                                                }
                                            </p>
+                                           <div className="mt-4 text-center">
+                                                <button
+                                                    onClick={closeModal}
+                                                    className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                                >
+                                                    Continue
+                                                </button>
+                                            </div>
                                         </div>
-                                        <button
-                                            onClick={closeModal}
-                                            className="mt-4 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                        >
-                                            Done
-                                        </button>
                                     </Modal>
                                     
                                     {/* Error Modal */}

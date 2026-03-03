@@ -145,10 +145,10 @@ export default function AuthenticatedLayout({ header, children }) {
 
             <div className="flex flex-1">
                 {/* Sidebar - Same gradient as topbar */}
-                <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-[#04095D] to-[#000000] transition-transform duration-300 ease-in-out lg:transition-none`}>
+                <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-[#04095D] to-[#000000] transition-transform duration-300 ease-in-out lg:transition-none flex flex-col`}>
                     <div className="flex flex-col h-full">
                         {/* Sidebar Header */}
-                        <div className="p-6 border-b border-white/10">
+                        <div className="p-6 border-b border-white/10 flex-shrink-0">
                             <div className="flex items-center space-x-3">
                                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                                     <User className="h-5 w-5 text-white" />
@@ -161,25 +161,46 @@ export default function AuthenticatedLayout({ header, children }) {
                         </div>
 
                         {/* Navigation Menu */}
-                        <nav className="flex-1 p-4 space-y-2">
-                            <NavLink
+                        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+                            <Link
                                 href={route('dashboard')}
-                                active={route().current('dashboard')}
-                                className="group flex items-center space-x-3 px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200"
-                                activeClassName="bg-white/20"
+                                className={`group flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 border-l-4 ${
+                                    route().current('dashboard')
+                                        ? 'bg-white/20 text-white shadow-lg border-white'
+                                        : 'text-white hover:bg-white/10 border-transparent'
+                                }`}
                             >
-                                <Home className="h-5 w-5 text-gray-300 group-hover:text-white transition-colors" />
-                                <span className="text-gray-300 group-hover:text-white transition-colors">Dashboard</span>
-                            </NavLink>
+                                <Home className={`h-5 w-5 transition-colors ${
+                                    route().current('dashboard')
+                                        ? 'text-white'
+                                        : 'text-gray-300 group-hover:text-white'
+                                }`} />
+                                <span className={`transition-colors font-medium ${
+                                    route().current('dashboard')
+                                        ? 'text-white'
+                                        : 'text-gray-300 group-hover:text-white'
+                                }`}>Dashboard</span>
+                            </Link>
 
-                            <NavLink
+                            <Link
                                 href={route('organizations.index')}
-                                active={route().current('organizations.index')}
-                                className="group flex items-center space-x-3 px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200"
+                                className={`group flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 border-l-4 ${
+                                    route().current('organizations.index')
+                                        ? 'bg-white/20 text-white shadow-lg border-white'
+                                        : 'text-white hover:bg-white/10 border-transparent'
+                                }`}
                             >
-                                <Building className="h-5 w-5 text-gray-300 group-hover:text-white transition-colors" />
-                                <span className="text-gray-300 group-hover:text-white transition-colors">Organizations</span>
-                            </NavLink>
+                                <Building className={`h-5 w-5 transition-colors ${
+                                    route().current('organizations.index')
+                                        ? 'text-white'
+                                        : 'text-gray-300 group-hover:text-white'
+                                }`} />
+                                <span className={`transition-colors font-medium ${
+                                    route().current('organizations.index')
+                                        ? 'text-white'
+                                        : 'text-gray-300 group-hover:text-white'
+                                }`}>Organizations</span>
+                            </Link>
 
                             <NavLink
                                 href="#"
@@ -192,27 +213,49 @@ export default function AuthenticatedLayout({ header, children }) {
                                 <span className="ml-auto text-xs bg-white/20 px-2 py-1 rounded">Soon</span>
                             </NavLink>
 
-                            <NavLink
-                                href="/announcements"
-                                active={route().current('announcements.*')}
-                                className="group flex items-center space-x-3 px-4 py-3 rounded-lg text-white/60 hover:bg-white/10 transition-all duration-200"
+                            <Link
+                                href={route('announcements.index')}
+                                className={`group flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 border-l-4 ${
+                                    route().current('announcements.*')
+                                        ? 'bg-white/20 text-white shadow-lg border-white'
+                                        : 'text-white hover:bg-white/10 border-transparent'
+                                }`}
                             >
-                                <Megaphone className="h-5 w-5 text-gray-400 group-hover:text-white transition-colors" />
-                                <span className="text-gray-400 group-hover:text-white transition-colors">Announcements</span>
-                            </NavLink>
+                                <Megaphone className={`h-5 w-5 transition-colors ${
+                                    route().current('announcements.*')
+                                        ? 'text-white'
+                                        : 'text-gray-300 group-hover:text-white'
+                                }`} />
+                                <span className={`transition-colors font-medium ${
+                                    route().current('announcements.*')
+                                        ? 'text-white'
+                                        : 'text-gray-300 group-hover:text-white'
+                                }`}>Announcements</span>
+                            </Link>
 
-                            <NavLink
+                            <Link
                                 href={route('schedule.index')}
-                                active={route().current('schedule.*')}
-                                className="group flex items-center space-x-3 px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200"
+                                className={`group flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 border-l-4 ${
+                                    route().current('schedule.*')
+                                        ? 'bg-white/20 text-white shadow-lg border-white'
+                                        : 'text-white hover:bg-white/10 border-transparent'
+                                }`}
                             >
-                                <Calendar className="h-5 w-5 text-gray-300 group-hover:text-white transition-colors" />
-                                <span className="text-gray-300 group-hover:text-white transition-colors">Schedules</span>
-                            </NavLink>
+                                <Calendar className={`h-5 w-5 transition-colors ${
+                                    route().current('schedule.*')
+                                        ? 'text-white'
+                                        : 'text-gray-300 group-hover:text-white'
+                                }`} />
+                                <span className={`transition-colors font-medium ${
+                                    route().current('schedule.*')
+                                        ? 'text-white'
+                                        : 'text-gray-300 group-hover:text-white'
+                                }`}>Schedules</span>
+                            </Link>
                         </nav>
 
                         {/* Sidebar Footer */}
-                        <div className="p-4 border-t border-white/10">
+                        <div className="p-4 border-t border-white/10 flex-shrink-0">
                             <NavLink
                                 href="#"
                                 onClick={(e) => e.preventDefault()}

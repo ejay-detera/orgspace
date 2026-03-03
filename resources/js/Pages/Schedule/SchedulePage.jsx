@@ -390,7 +390,7 @@ export default function SchedulePage() {
                 {/* Week navigation with year/month selector */}
                 <div className="flex flex-col gap-3 p-4 bg-gray-50 border-b border-gray-200">
                     {/* Year and Month Selector */}
-                    <div className="flex items-center justify-center gap-6">
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
                         {/* Year Dropdown */}
                         <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                             Year:
@@ -403,7 +403,7 @@ export default function SchedulePage() {
                                     newDate.setFullYear(newYear);
                                     setCurrentWeekStart(newDate);
                                 }}
-                                className="px-3 py-1.5 pr-8 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30"
+                                className="px-3 py-1.5 pr-8 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30 w-24"
                             >
                                 {[2024, 2025, 2026, 2027, 2028, 2029, 2030].map(year => (
                                     <option key={year} value={year}>{year}</option>
@@ -424,7 +424,7 @@ export default function SchedulePage() {
                                     newDate.setDate(1 + diff);
                                     setCurrentWeekStart(newDate);
                                 }}
-                                className="px-3 py-1.5 pr-8 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30"
+                                className="px-3 py-1.5 pr-8 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30 w-28"
                             >
                                 {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month, idx) => (
                                     <option key={idx} value={idx}>{month}</option>
@@ -439,8 +439,10 @@ export default function SchedulePage() {
                             <ChevronLeft className="h-5 w-5 text-gray-700" />
                         </button>
                         <div className="flex flex-col items-center">
-                            <h3 className="text-lg font-semibold text-gray-900">
-                                {weekDates[0].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {weekDates[6].toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 text-center">
+                                <div className="text-sm sm:text-base">
+                                    {weekDates[0].toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {weekDates[6].toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                </div>
                             </h3>
                             <button onClick={goToToday} className="text-sm text-[#04095d] hover:underline mt-1">
                                 Today
@@ -452,56 +454,191 @@ export default function SchedulePage() {
                     </div>
                 </div>
                 
-                {/* Calendar grid */}
-                <div className="grid grid-cols-8 bg-gray-50">
-                    <div className="p-3 font-medium text-gray-700 border-r border-gray-200">Time</div>
-                    {weekDates.map((date, idx) => (
-                        <div key={idx} className="p-3 font-medium text-gray-700 text-center border-r border-gray-200 last:border-r-0">
-                            <div>{days[idx].slice(0, 3)}</div>
-                            <div className="text-xs font-normal text-gray-500 mt-1">
-                                {date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}
+                {/* Calendar grid - fully responsive */}
+                <div className="hidden sm:block overflow-x-auto">
+                    {/* Desktop view - horizontal scroll */}
+                    <div className="min-w-[600px]">
+                        <div className="grid grid-cols-8 bg-gray-50">
+                            <div className="p-2 sm:p-3 font-medium text-gray-700 border-r border-gray-200 text-xs sm:text-sm">Time</div>
+                            {weekDates.map((date, idx) => (
+                                <div key={idx} className="p-2 sm:p-3 font-medium text-gray-700 text-center border-r border-gray-200 last:border-r-0">
+                                    <div className="text-xs sm:text-sm">{days[idx].slice(0, 3)}</div>
+                                    <div className="text-xs font-normal text-gray-500 mt-1">
+                                        {date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        
+                        {timeSlots.map(time => (
+                            <div key={time} className="min-w-[600px] grid grid-cols-8 border-t border-gray-200">
+                                <div className="p-2 sm:p-3 text-xs sm:text-sm text-gray-600 border-r border-gray-200 bg-gray-50">
+                                    {time}
+                                </div>
+                                {weekDates.map((date, idx) => {
+                                    const events = getEventsForDateAndTime(date, time);
+                                    const dayOfWeek = days[date.getDay() === 0 ? 6 : date.getDay() - 1];
+                                    return (
+                                        <div 
+                                            key={idx} 
+                                            className="p-1 sm:p-1 border-r border-gray-200 last:border-r-0 min-h-[50px] sm:min-h-[60px] cursor-pointer hover:bg-blue-50 transition-colors relative group"
+                                            onClick={() => handleCellClick(date, time, dayOfWeek)}
+                                            title="Click to add schedule"
+                                        >
+                                            {events.length === 0 && (
+                                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <Plus className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+                                                </div>
+                                            )}
+                                            {events.map((event, eventIdx) => {
+                                                const colors = getSubjectColor(event.name);
+                                                return (
+                                                    <div key={eventIdx} className={`${colors.bg} border ${colors.border} rounded p-1 mb-1 text-xs`}>
+                                                        <div className={`font-medium ${colors.text} truncate text-xs`}>
+                                                            {event.name}
+                                                            {!event.recurring && <span className="ml-1 text-[8px]">📍</span>}
+                                                        </div>
+                                                        {event.location && <div className={`${colors.textLight} truncate text-[10px]`}>{event.location}</div>}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    );
+                                })}
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
-                
-                {timeSlots.map(time => (
-                    <div key={time} className="grid grid-cols-8 border-t border-gray-200">
-                        <div className="p-3 text-sm text-gray-600 border-r border-gray-200 bg-gray-50">
-                            {time}
-                        </div>
-                        {weekDates.map((date, idx) => {
-                            const events = getEventsForDateAndTime(date, time);
-                            const dayOfWeek = days[date.getDay() === 0 ? 6 : date.getDay() - 1];
-                            return (
-                                <div 
-                                    key={idx} 
-                                    className="p-1 border-r border-gray-200 last:border-r-0 min-h-[60px] cursor-pointer hover:bg-blue-50 transition-colors relative group"
-                                    onClick={() => handleCellClick(date, time, dayOfWeek)}
-                                    title="Click to add schedule"
-                                >
-                                    {events.length === 0 && (
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <Plus className="h-4 w-4 text-gray-400" />
+
+                {/* Mobile view - vertical layout */}
+                <div className="sm:hidden">
+                    {weekDates.map((date, idx) => {
+                        const dayOfWeek = days[date.getDay() === 0 ? 6 : date.getDay() - 1];
+                        const dayEvents = calendarEvents.filter(event => {
+                            if (!event.start_time || !event.end_time) return false;
+                            
+                            // Check if it's a recurring schedule matching the day
+                            if (event.day && event.day === dayOfWeek && !event.specific_date) {
+                                if (activeSemester) {
+                                    const semesterStart = new Date(activeSemester.start_date);
+                                    const semesterEnd = new Date(activeSemester.end_date);
+                                    const currentDate = new Date(date);
+                                    if (currentDate < semesterStart || currentDate > semesterEnd) {
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            }
+                            
+                            // Check if it's a one-time schedule matching the specific date
+                            if (event.specific_date) {
+                                const eventDate = new Date(event.specific_date);
+                                const currentDate = new Date(date);
+                                return eventDate.toDateString() === currentDate.toDateString();
+                            }
+                            
+                            return false;
+                        });
+
+                        return (
+                            <div key={idx} className="border-b border-gray-200 last:border-b-0">
+                                <div className="bg-gray-50 p-3 border-b border-gray-200">
+                                    <h4 className="font-semibold text-gray-900">
+                                        {days[idx]} - {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                    </h4>
+                                </div>
+                                <div className="p-3">
+                                    {dayEvents.length === 0 ? (
+                                        <div 
+                                            className="text-center py-4 text-gray-400 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                                            onClick={() => {
+                                                const formatDate = (d) => {
+                                                    const year = d.getFullYear();
+                                                    const month = String(d.getMonth() + 1).padStart(2, '0');
+                                                    const day = String(d.getDate()).padStart(2, '0');
+                                                    return `${year}-${month}-${day}`;
+                                                };
+                                                
+                                                setSchedEntry([{
+                                                    name: '',
+                                                    days: [days[idx].slice(0, 3)],
+                                                    start_time: '09:00',
+                                                    end_time: '10:00',
+                                                    professor_name: '',
+                                                    location: '',
+                                                    recurring: false,
+                                                    specific_date: formatDate(date)
+                                                }]);
+                                                setErrors([]);
+                                                setValidationErrors({});
+                                                setAddSchedModal(true);
+                                            }}
+                                        >
+                                            <Plus className="h-6 w-6 mx-auto mb-2" />
+                                            <p className="text-sm">Add Schedule</p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            {dayEvents
+                                                .sort((a, b) => a.start_time.localeCompare(b.start_time))
+                                                .map((event, eventIdx) => {
+                                                    const colors = getSubjectColor(event.name);
+                                                    return (
+                                                        <div 
+                                                            key={eventIdx} 
+                                                            className={`${colors.bg} border ${colors.border} rounded-lg p-3 cursor-pointer hover:shadow-md transition-shadow`}
+                                                            onClick={() => {
+                                                                const formatDate = (d) => {
+                                                                    const year = d.getFullYear();
+                                                                    const month = String(d.getMonth() + 1).padStart(2, '0');
+                                                                    const day = String(d.getDate()).padStart(2, '0');
+                                                                    return `${year}-${month}-${day}`;
+                                                                };
+                                                                
+                                                                setSchedEntry([{
+                                                                    name: event.name,
+                                                                    days: event.recurring ? [days[idx].slice(0, 3)] : [],
+                                                                    start_time: event.start_time,
+                                                                    end_time: event.end_time,
+                                                                    professor_name: event.professor_name || '',
+                                                                    location: event.location || '',
+                                                                    recurring: event.recurring,
+                                                                    specific_date: event.specific_date || formatDate(date)
+                                                                }]);
+                                                                setErrors([]);
+                                                                setValidationErrors({});
+                                                                setAddSchedModal(true);
+                                                            }}
+                                                        >
+                                                            <div className="flex justify-between items-start mb-2">
+                                                                <div className={`font-medium ${colors.text} text-sm`}>
+                                                                    {event.name}
+                                                                    {!event.recurring && <span className="ml-1 text-[10px]">📍</span>}
+                                                                </div>
+                                                                <div className={`${colors.text} text-xs`}>
+                                                                    {formatTime(event.start_time)} - {formatTime(event.end_time)}
+                                                                </div>
+                                                            </div>
+                                                            {event.location && (
+                                                                <div className={`${colors.textLight} text-xs mb-1`}>
+                                                                    📍 {event.location}
+                                                                </div>
+                                                            )}
+                                                            {event.professor_name && (
+                                                                <div className={`${colors.text} text-xs`}>
+                                                                    👤 {event.professor_name}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })}
                                         </div>
                                     )}
-                                    {events.map((event, eventIdx) => {
-                                        const colors = getSubjectColor(event.name);
-                                        return (
-                                            <div key={eventIdx} className={`${colors.bg} border ${colors.border} rounded p-1 mb-1 text-xs`}>
-                                                <div className={`font-medium ${colors.text} truncate`}>
-                                                    {event.name}
-                                                    {!event.recurring && <span className="ml-1 text-[10px]">📍</span>}
-                                                </div>
-                                                {event.location && <div className={`${colors.textLight} truncate`}>{event.location}</div>}
-                                            </div>
-                                        );
-                                    })}
                                 </div>
-                            );
-                        })}
-                    </div>
-                ))}
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
         );
     };
@@ -606,6 +743,21 @@ export default function SchedulePage() {
         setSchedEntry(scheduleEntry.filter((_, idx) => idx !== indexToRemove));
     };
 
+    const duplicateEntry = (indexToDuplicate) => {
+        const entryToDuplicate = scheduleEntry[indexToDuplicate];
+        const duplicatedEntry = {
+            ...entryToDuplicate,
+            name: entryToDuplicate.name ? `${entryToDuplicate.name} (Copy)` : '',
+        };
+        
+        const newEntry = [...scheduleEntry];
+        newEntry.splice(indexToDuplicate + 1, 0, duplicatedEntry);
+        setSchedEntry(newEntry);
+        
+        // Clear validation errors when duplicating
+        setValidationErrors({});
+    };
+
     const handleCloseModal = () => {
         setAddSchedModal(false);
         // Reset form and errors
@@ -617,27 +769,27 @@ export default function SchedulePage() {
     return (
         <PageTransition>
             <AuthenticatedLayout>
-                <div className="flex-1 p-6 md:p-8">
-                        <div className="flex-1 p-6 md:p-8">
+                <div className="flex-1 p-4 sm:p-6 md:p-8">
+                        <div className="flex-1 p-4 sm:p-6 md:p-8">
                         <div className="max-w-6xl mx-auto relative">
 
                             {/* Success message */}
                             {showSuccess && (
-                                <div className="fixed top-20 right-6 z-50 bg-green-100 border border-green-400 text-green-800 px-6 py-4 rounded-lg shadow-lg">
+                                <div className="fixed top-20 right-4 sm:right-6 z-50 bg-green-100 border border-green-400 text-green-800 px-4 sm:px-6 py-3 sm:py-4 rounded-lg shadow-lg">
                                     <div className="flex items-center gap-2">
-                                        <Check className="h-5 w-5" />
-                                        <span className="font-medium">Schedule successfully added!</span>
+                                        <Check className="h-4 w-4 sm:h-5 sm:w-5" />
+                                        <span className="font-medium text-sm sm:text-base">Schedule successfully added!</span>
                                     </div>
                                 </div>
                             )}
 
                             {/* View toggle button */}
                             <button onClick={() => setShowList(!showList)}
-                                className="absolute -top-20 right-2 z-10 flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg shadow hover:bg-gray-50 transition-colors"
+                                className="absolute -top-16 sm:-top-20 right-2 z-10 flex items-center gap-2 px-3 sm:px-4 py-2 bg-white border border-gray-300 rounded-lg shadow hover:bg-gray-50 transition-colors"
                                 title={showList ? "Switch to Calendar View" : "Switch to List View"}
                             >
-                                <List className="h-5 w-5 text-[#04095d]" />
-                                <span className="text-sm font-medium text-gray-700">{showList ? "Calendar View" : "List View"}</span>
+                                <List className="h-4 w-4 sm:h-5 sm:w-5 text-[#04095d]" />
+                                <span className="text-xs sm:text-sm font-medium text-gray-700 hidden sm:inline">{showList ? "Calendar View" : "List View"}</span>
                             </button>
 
                             {/* Calendar     !showList */}
@@ -649,7 +801,7 @@ export default function SchedulePage() {
                                             {activeSemester && (
                                                 <div>
                                                     <p className="text-sm text-gray-600 mt-1">
-                                                        {activeSemester.name} • {new Date(activeSemester.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} - {new Date(activeSemester.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                        {activeSemester.name || 'Current'} Semester {activeSemester.year || ''} • {new Date(activeSemester.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} - {new Date(activeSemester.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                                     </p>
                                                     <p className="text-xs text-gray-500 mt-1 italic">
                                                         Recurring schedules will only appear within the semester dates
@@ -659,14 +811,14 @@ export default function SchedulePage() {
                                         </div>
 
                                         {/* Personal / Org */}
-                                        <div className="flex gap-6">
-                                            <label>
+                                        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                                            <label className="flex items-center gap-2 cursor-pointer">
                                                 <Checkbox label="Personal" checked={showPersonal} onChange={(e) => setShowPersonal(e.target.checked)} className="h-5 w-5"/>
-                                                <span className="text-sm font-md text-gray-800 pl-2">Personal</span>
+                                                <span className="text-sm font-medium text-gray-800">Personal</span>
                                             </label>
-                                            <label>
-                                                <Checkbox label="Personal" checked={showOrg} onChange={(e) => setShowOrg(e.target.checked)} className="h-5 w-5"/>
-                                                <span className="text-sm font-md text-gray-800 pl-2">Organization</span>
+                                            <label className="flex items-center gap-2 cursor-pointer">
+                                                <Checkbox label="Organization" checked={showOrg} onChange={(e) => setShowOrg(e.target.checked)} className="h-5 w-5"/>
+                                                <span className="text-sm font-medium text-gray-800">Organization</span>
                                             </label>
                                         </div>
                                     </div>
@@ -696,10 +848,10 @@ export default function SchedulePage() {
                                             <table className="min-w-full divide-y divide-gray-200">
                                                 <thead className="bg-gray-50">
                                                     <tr>
-                                                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> Schedule </th>
-                                                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> Subject </th>
-                                                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> Room/Location </th>
-                                                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> Instructor </th>
+                                                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap"> Schedule </th>
+                                                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap"> Subject </th>
+                                                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap"> Room/Location </th>
+                                                        <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap"> Instructor </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody className="bg-white divide-y divide-gray-200">
@@ -711,23 +863,31 @@ export default function SchedulePage() {
                                                         })
                                                         .map((entry, index) => (
                                                         <tr key={index} className="hover:bg-gray-50 transition-colors">
-                                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                                {entry.specific_date
-                                                                    ? new Date(entry.specific_date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                                                                    : entry.day
-                                                                }{(entry.specific_date || entry.day) ? ' • ' : ''}
-                                                                {entry.start_time && entry.end_time
-                                                                    ? `${formatTime(entry.start_time)} – ${formatTime(entry.end_time)}`
-                                                                    : <span className="text-gray-400 italic">—</span>}
+                                                            <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                                <div className="max-w-[200px] sm:max-w-none">
+                                                                    {entry.specific_date
+                                                                        ? new Date(entry.specific_date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                                                                        : entry.day
+                                                                    }{(entry.specific_date || entry.day) ? ' • ' : ''}
+                                                                    {entry.start_time && entry.end_time
+                                                                        ? `${formatTime(entry.start_time)} – ${formatTime(entry.end_time)}`
+                                                                        : <span className="text-gray-400 italic">—</span>}
+                                                                </div>
                                                             </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                                {entry.name}
+                                                            <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-900">
+                                                                <div className="max-w-[150px] sm:max-w-none truncate">
+                                                                    {entry.name}
+                                                                </div>
                                                             </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                                {entry.location || <span className="text-gray-400 italic">—</span>}
+                                                            <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-500">
+                                                                <div className="max-w-[120px] sm:max-w-none truncate">
+                                                                    {entry.location || <span className="text-gray-400 italic">—</span>}
+                                                                </div>
                                                             </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                                {entry.professor_name || <span className="text-gray-400 italic">—</span>}
+                                                            <td className="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-900">
+                                                                <div className="max-w-[120px] sm:max-w-none truncate">
+                                                                    {entry.professor_name || <span className="text-gray-400 italic">—</span>}
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     ))}
@@ -755,12 +915,12 @@ export default function SchedulePage() {
                             )}
                         </div>
 
-                    <div className="fixed bottom-16 right-6 flex flex-col gap-4 z-50">
+                    <div className="fixed bottom-16 right-4 sm:right-6 flex flex-col gap-3 sm:gap-4 z-50">
                         <Button
-                            className="bg-[#04095d] hover:bg-indigo-900 shadow-lg rounded-full text-white px-6 py-5 min-w-[180px] justify-center"
+                            className="bg-[#04095d] hover:bg-indigo-900 shadow-lg rounded-full text-white px-4 sm:px-6 py-3 sm:py-5 min-w-[140px] sm:min-w-[180px] justify-center text-sm sm:text-base"
                             onClick={() => setAddSchedModal(true)}
                         >
-                            <Plus className="mr-2 h-5 w-5" />Add Schedule
+                            <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />Add Schedule
                         </Button>
 
                         {/*<Button variant="secondary" className="bg-gray-700 hover:bg-gray-600 border-gray-600 rounded-full text-white px-6 py-5 min-w-[180px] justify-center shadow-lg"
@@ -774,20 +934,20 @@ export default function SchedulePage() {
                 
                 {/* Adding schedule manually */}
                 <Modal show={addSchedModal} onClose={handleCloseModal} maxWidth="2xl">
-                    <div className="flex flex-col max-h-[85vh]">
-                        <div className="sticky top-0 z-10 bg-white px-6 md:px-8 pt-6 pb-4 border-b border-gray-200">
-                            <button onClick={handleCloseModal} className="absolute top-4 right-6 text-gray-500 hover:text-gray-800 transition-colors z-20 pr-3">
-                                <X className="h-7 w-7" />
+                    <div className="flex flex-col max-h-[80vh] sm:max-h-[75vh]">
+                        <div className="sticky top-0 z-10 bg-white px-4 sm:px-6 md:px-8 pt-4 sm:pt-6 pb-4 border-b border-gray-200">
+                            <button onClick={handleCloseModal} className="absolute top-4 right-4 sm:right-6 text-gray-500 hover:text-gray-800 transition-colors z-20 pr-3">
+                                <X className="h-6 w-6 sm:h-7 sm:w-7" />
                             </button>
 
-                        <div className="flex items-center justify-between mt-10 ">
-                                <h2 className="text-3xl md:text-4xl font-bold text-[#04095d]"> Add Schedule </h2>
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-8 sm:mt-10 gap-4">
+                                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#04095d]"> Add Schedule </h2>
                                 <Button size="icon"  className="bg-[#04095d] hover:bg-indigo-800 text-white rounded-full shadow-sm flex-shrink-0"  onClick={addEntry}>
-                                    <Plus className="h-7 w-7" />
+                                    <Plus className="h-6 w-6 sm:h-7 sm:w-7" />
                                 </Button>
                             </div>
                         </div>
-                        <div className="flex-1 overflow-y-auto px-6 md:px-8 py-6">
+                        <div className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6">
 
                             {/* General Error Messages */}
                             {errors.length > 0 && (
@@ -811,26 +971,44 @@ export default function SchedulePage() {
 
                             {/* Form rows */}
                             {scheduleEntry.map((entry, index) => (
-                                <div key={index} className="relative mb-8 p-6 bg-gray-50 rounded-xl border border-gray-200"
+                                <div key={index} className="relative mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-50 rounded-xl border border-gray-200"
                                 >
-                                    {/* Remove entry btn*/}
-                                    {scheduleEntry.length > 1 && (
-                                        <button  onClick={() => removeEntry(index)} className="absolute top-4 right-4 text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-full transition-colors z-10"
-                                            title="Remove this entry"
-                                        > <Trash2 className="h-5 w-5" />
+                                    {/* Action buttons */}
+                                    <div className="flex gap-2 absolute top-3 sm:top-4 right-3 sm:right-4 z-10">
+                                        {/* Duplicate button */}
+                                        <button 
+                                            onClick={() => duplicateEntry(index)} 
+                                            className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 p-2 rounded-full transition-colors"
+                                            title="Duplicate this entry"
+                                        >
+                                            <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2zm-3-2h6a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8l-4-4-4 4" />
+                                            </svg>
                                         </button>
-                                    )}
+                                        
+                                        {/* Remove button */}
+                                        {scheduleEntry.length > 1 && (
+                                            <button 
+                                                onClick={() => removeEntry(index)} 
+                                                className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-full transition-colors"
+                                                title="Remove this entry"
+                                            >
+                                                <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
+                                            </button>
+                                        )}
+                                    </div>
 
                                     {/* Subject Name */}
-                                    <div className="mb-5">
+                                    <div className="mb-4 sm:mb-5">
                                         <InputLabel name="name" value="Subject Name" className="text-sm font-medium text-gray-700 mb-1.5" />
                                         <input type="text" value={entry.name} onChange={(e) => updateEntry(index, 'name', e.target.value)} placeholder="e.g. Data Structures and Algorithms"
-                                            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30 ${validationErrors[index]?.some(e => e.includes('Subject name')) ? 'border-red-500' : 'border-gray-300'}`}
+                                            className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30 text-sm sm:text-base ${validationErrors[index]?.some(e => e.includes('Subject name')) ? 'border-red-500' : 'border-gray-300'}`}
                                         />
                                     </div>
 
 
-                                    <div className="mb-5">
+                                    <div className="mb-4 sm:mb-5">
                                         <label className="flex items-center gap-3 cursor-pointer">
                                             <input
                                                 type="checkbox"
@@ -855,9 +1033,9 @@ export default function SchedulePage() {
 
                                     {/* Day(s) of Week - visible only for recurring */}
                                     {entry.recurring ? (
-                                        <div className="mb-5">
+                                        <div className="mb-4 sm:mb-5">
                                             <InputLabel value="Day(s) of Week" className="text-sm font-medium text-gray-700 mb-1.5" />
-                                            <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
+                                            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
                                                 {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
                                                     <label key={day} className="flex items-center gap-2 cursor-pointer">
                                                         <input type="checkbox"
@@ -868,14 +1046,14 @@ export default function SchedulePage() {
                                                                     : (entry.days || []).filter(d => d !== day);
                                                                 updateEntry(index, 'days', newDays);
                                                             }}
-                                                            className="h-5 w-5 text-[#04095d] border-gray-300 rounded focus:ring-[#04095d]"
+                                                            className="h-4 w-4 sm:h-5 sm:w-5 text-[#04095d] border-gray-300 rounded focus:ring-[#04095d]"
                                                         />
-                                                        <span className="text-sm text-gray-700">{day}</span>
+                                                        <span className="text-xs sm:text-sm text-gray-700">{day}</span>
                                                     </label>
                                                 ))}
                                             </div>
                                             {entry.days?.length > 0 && (
-                                                <p className="text-sm text-gray-600 mt-2">
+                                                <p className="text-xs sm:text-sm text-gray-600 mt-2">
                                                     Will recur every {entry.days.map((d, i) => 
                                                         i === entry.days.length - 1 && entry.days.length > 1 
                                                             ? `and ${d}` 
@@ -888,53 +1066,53 @@ export default function SchedulePage() {
                                         </div>
                                     ) : (
                                         /* Specific Date - shown only for one-time */
-                                        <div className="mb-5">
+                                        <div className="mb-4 sm:mb-5">
                                             <InputLabel value="Specific Date" className="text-sm font-medium text-gray-700 mb-1.5" />
                                             <input 
                                                 type="date" 
                                                 value={entry.specific_date || ''}
                                                 onChange={(e) => updateEntry(index, 'specific_date', e.target.value)}
-                                                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30 ${validationErrors[index]?.some(e => e.includes('Specific date')) ? 'border-red-500' : 'border-gray-300'}`}
+                                                className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30 text-sm sm:text-base ${validationErrors[index]?.some(e => e.includes('Specific date')) ? 'border-red-500' : 'border-gray-300'}`}
                                             />
                                         </div>
                                     )}
 
                                     {/* Start and end time*/}
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-5">
                                         <div>
                                             <InputLabel value="Start Time" className="text-sm font-medium text-gray-700 mb-1.5" />
                                             <input name="start_time" type="time" value={entry.start_time || ''}  onChange={(e) => updateEntry(index, 'start_time', e.target.value)}
-                                                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30 ${validationErrors[index]?.some(e => e.includes('Start time') || e.includes('End time must be after')) ? 'border-red-500' : 'border-gray-300'}`}
+                                                className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30 text-sm sm:text-base ${validationErrors[index]?.some(e => e.includes('Start time') || e.includes('End time must be after')) ? 'border-red-500' : 'border-gray-300'}`}
                                             />
                                         </div>
                                         <div>
                                             <InputLabel value="End Time" className="text-sm font-medium text-gray-700 mb-1.5" />
                                             <input name="end_time" type="time" value={entry.end_time || ''} onChange={(e) => updateEntry(index, 'end_time', e.target.value)}
-                                                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30 ${validationErrors[index]?.some(e => e.includes('End time')) ? 'border-red-500' : 'border-gray-300'}`}
+                                                className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border rounded-lg focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30 text-sm sm:text-base ${validationErrors[index]?.some(e => e.includes('End time')) ? 'border-red-500' : 'border-gray-300'}`}
                                             />
                                         </div>
                                     </div>
 
                                     {/* Time validation error banner */}
                                     {entry.start_time && entry.end_time && entry.start_time >= entry.end_time && (
-                                        <div className="mb-5 p-3 bg-red-50 border border-red-300 rounded-lg flex items-center gap-2">
+                                        <div className="mb-4 sm:mb-5 p-3 bg-red-50 border border-red-300 rounded-lg flex items-center gap-2">
                                             <X className="h-4 w-4 text-red-600" />
                                             <p className="text-sm text-red-800 font-medium">End time must be after start time</p>
                                         </div>
                                     )}
 
                                     {/* Room & Professor (optional) */}
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-5">
                                         <div>
                                             <InputLabel value="Room / Location (optional)" className="text-sm font-medium text-gray-700 mb-1.5" />
                                             <input name="location" type="text" value={entry.location || ''} onChange={(e) => updateEntry(index, 'location', e.target.value)} placeholder="e.g. Room 101, Academic Building"
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30"
+                                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30 text-sm sm:text-base"
                                             />
                                         </div>
                                         <div>
                                             <InputLabel value="Professor Name (optional)" className="text-sm font-medium text-gray-700 mb-1.5" />
                                             <input name="professor_name" type="text" value={entry.professor_name || ''}  onChange={(e) => updateEntry(index, 'professor_name', e.target.value)} placeholder="Prof."
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30"
+                                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#04095d] focus:ring-1 focus:ring-[#04095d]/30 text-sm sm:text-base"
                                             />
                                         </div>
                                     </div>
@@ -953,14 +1131,14 @@ export default function SchedulePage() {
                             ))}
                         </div>
 
-                        <div className="sticky bottom-0 left-0 right-0 bg-white pt-6 pb-4 border-t border-gray-200 px-6 md:px-8">
-                                <div className="flex justify-between items-center">
-                                <Button variant="outline" className="text-gray-600 hover:bg-gray-100"
+                        <div className="sticky bottom-0 left-0 right-0 bg-white pt-4 sm:pt-6 pb-4 border-t border-gray-200 px-4 sm:px-6 md:px-8">
+                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                <Button variant="outline" className="text-gray-600 hover:bg-gray-100 w-full sm:w-auto order-2 sm:order-1"
                                     onClick={handleCloseModal}
                                 > Cancel
                                 </Button>
 
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-4 w-full sm:w-auto order-1 sm:order-2">
                                     {isSaving && (
                                         <div className="flex items-center gap-2 text-gray-600">
                                             <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
@@ -970,7 +1148,7 @@ export default function SchedulePage() {
                                         </div>
                                     )}
 
-                                    <Button className="bg-[#04095d] hover:bg-indigo-800 text-white px-10 py-6 rounded-full shadow-md disabled:opacity-50"
+                                    <Button className="bg-[#04095d] hover:bg-indigo-800 text-white px-8 sm:px-10 py-4 sm:py-6 rounded-full shadow-md disabled:opacity-50 w-full sm:w-auto"
                                         disabled={isSaving} onClick={handleAddDone}
                                     > {isSaving ? 'Saving...' : 'Done'}
                                     </Button>
