@@ -85,8 +85,24 @@ export default function Announce({ committees = [] }) {
             type: type === 'Select Priority' || !type,
             committee: !selectedCommittee || (selectedCommittee === 'custom' && selectedUserIds.length === 0),
         };
+        
         if (Object.values(newFieldErrors).some(Boolean)) {
             setFieldErrors(newFieldErrors);
+            setShowValidationError(true);
+            
+            // Set specific validation error messages
+            const errors = [];
+            if (newFieldErrors.title) errors.push('Title is required');
+            if (newFieldErrors.content) errors.push('Content is required');
+            if (newFieldErrors.type) errors.push('Please select a priority level');
+            if (newFieldErrors.committee) {
+                if (!selectedCommittee) {
+                    errors.push('Please select a committee');
+                } else if (selectedCommittee === 'custom' && selectedUserIds.length === 0) {
+                    errors.push('Please select at least one member for custom announcement');
+                }
+            }
+            setValidationErrors(errors);
             return;
         }
 
@@ -162,7 +178,6 @@ export default function Announce({ committees = [] }) {
                 }
             >
                 <div className="p-6">
-
                     {/*containcer for type & audience*/}
                     <div className="w-full flex justify-center">
                         <div className="flex items-center gap-80 flex-wrap">
@@ -170,7 +185,7 @@ export default function Announce({ committees = [] }) {
                             {/*priority level*/}
                             <div className="flex flex-col gap-1">
                                 <div className="flex items-center gap-3">
-                                    <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Priority Level:</span>
+                                    <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Priority Level <span className="text-red-500">*</span>:</span>
 
                                     <Dropdown>
                                         <Dropdown.Trigger>
@@ -203,7 +218,7 @@ export default function Announce({ committees = [] }) {
                             {/*target committee*/}
                             <div className="flex flex-col gap-1">
                                 <div className="flex items-center gap-3">
-                                <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Target Committee:</span>
+                                <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Target Committee <span className="text-red-500">*</span>:</span>
 
                                 <Dropdown>
                                     <Dropdown.Trigger>
@@ -273,7 +288,7 @@ export default function Announce({ committees = [] }) {
                     <div className="max-w-4xl mt-8 mx-auto">
                         {/* Announcement title */}
                         <div>
-                            <label className="block mb-2 text-sm font-medium text-gray-700">Title</label>
+                            <label className="block mb-2 text-sm font-medium text-gray-700">Title <span className="text-red-500">*</span></label>
                             <input name="title" type="text" value={data.title}
                                 onChange={(e) => { if (e.target.value.length <= 200) { setData('title', e.target.value); setFieldErrors(prev => ({ ...prev, title: false })); } }}
                                 maxLength={200} placeholder="Enter announcement title..."
@@ -286,12 +301,26 @@ export default function Announce({ committees = [] }) {
                         
                         {/*Announcement Body */}
                         <div className="mt-8 mb-16">
-                            <label className="block mb-2 text-sm font-medium text-gray-700">Body Text</label>
+                            <label className="block mb-2 text-sm font-medium text-gray-700">Body Text <span className="text-red-500">*</span></label>
                                 
                             <div className={`bg-white rounded-xl border shadow-sm overflow-hidden ${fieldErrors.content ? 'border-red-500' : 'border-gray-300'}`}>
-                                <ReactQuill name="content" theme="snow" value={data.content}
+                                <ReactQuill 
+                                    name="content" 
+                                    theme="snow" 
+                                    value={data.content}
                                     onChange={(value) => { setData('content', value); setFieldErrors(prev => ({ ...prev, content: false })); }}
-                                    className="h-64"></ReactQuill>
+                                    className="h-64"
+                                    modules={{
+                                        toolbar: [
+                                            [{ 'header': [1, 2, false] }],
+                                            ['bold', 'italic', 'underline', 'strike'],
+                                            ['blockquote', 'code-block'],
+                                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                            [{ 'color': [] }, { 'background': [] }],
+                                            ['clean']
+                                        ]
+                                    }}
+                                />
                             </div>
                             {fieldErrors.content && <p className="text-xs text-red-500 mt-2">Body text is required.</p>}
                         </div>

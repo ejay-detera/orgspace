@@ -18,33 +18,37 @@ class OrganizationMemberSeeder extends Seeder
             [
                 //for the president
                 'role' => 'president',
-                'UserID' => 1,
-                'isCreator' => 'true',
-                'OrganizationID' => 1,
+                'status' => 'active',
+                'user_id' => 1,
+                'isCreator' => true,
+                'organization_id' => 1,
             ],
 
             [
                 //same org member
                 'role' => 'trial',
-                'UserID' => 2,
-                'isCreator' => 'false',
-                'OrganizationID' => 1,
+                'status' => 'active',
+                'user_id' => 2,
+                'isCreator' => false,
+                'organization_id' => 1,
             ],
 
             [
                 //same committee
                 'role' => 'trial',
-                'UserID' => 3,
-                'isCreator' => 'false',
-                'OrganizationID' => 1,
+                'status' => 'active',
+                'user_id' => 3,
+                'isCreator' => false,
+                'organization_id' => 1,
             ],
 
             [
                 //diff org
                 'role' => 'trial',
-                'UserID' => 3,
-                'isCreator' => 'false',
-                'OrganizationID' => 2,
+                'status' => 'active',
+                'user_id' => 3,
+                'isCreator' => false,
+                'organization_id' => 2,
             ],
         ]);
     }

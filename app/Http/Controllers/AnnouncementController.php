@@ -102,15 +102,15 @@ class AnnouncementController extends Controller
         $organizationId = $user->committee?->organization_id;
 
         // Committees with their members (for the custom member list picker)
-        $committees = Committee::with(['users' => function ($q) {
-            $q->select('id', 'first_name', 'middle_name', 'last_name', 'committee_id');
+        $committees = Committee::with(['committeeMembers' => function ($q) {
+            $q->select('id', 'first_name', 'middle_name', 'last_name');
         }])
         ->where('organization_id', $organizationId)
         ->select('id', 'name')
         ->get()
         ->map(function ($committee) {
             // Add full name to each member
-            $committee->users->each(function ($u) {
+            $committee->committeeMembers->each(function ($u) {
                 $u->full_name = trim(implode(' ', array_filter([
                     $u->first_name, $u->middle_name, $u->last_name,
                 ])));

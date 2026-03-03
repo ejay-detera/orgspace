@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('organization_members', function (Blueprint $table) {
             $table->id();
             $table->string('role');
+            $table->string('status')->default('pending');
             $table->boolean('isCreator');
-            $table->foreignID('UserID')->constrained('users');
-            $table->foreignID('OrganizationID')->constrained('organizations');
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('organization_id')->constrained('organizations');
+            $table->timestamps();
         });
     }
 

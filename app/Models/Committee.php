@@ -35,7 +35,7 @@ class Committee extends Model
 
     public function committeeMembers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'committee_user');
     }
 
     public function permissions(): HasMany
