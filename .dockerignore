@@ -1,0 +1,47 @@
+# Dependencies
+/vendor
+/node_modules
+
+# Environment
+.env
+.env.backup
+.env.production
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE / Editor
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation (not needed in image)
+*.md
+!README.md
+
+# Tests (not needed in production image)
+/tests
+phpunit.xml
+
+# Docker files (avoid recursive copy)
+docker-compose.yml
+docker-startup.bat
+docker-startup.sh
+.dockerignore
+
+# Built assets (we build fresh in Docker)
+/public/build
+/public/hot
+
+# Storage logs and cache
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
