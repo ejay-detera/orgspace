@@ -64,5 +64,12 @@ echo "  Access at: http://localhost:8005"
 echo "============================================"
 echo ""
 
+# --------------------------------------------------
+# Fix permissions (artisan commands above ran as root)
+# --------------------------------------------------
+echo "Fixing storage permissions..."
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
 # Start Apache in foreground
 exec apache2-foreground
